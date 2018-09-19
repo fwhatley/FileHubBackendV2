@@ -5,7 +5,7 @@ namespace FileHubBackendV2
 {
     public class Program
     {
-        public static void Main(string[] args) // dotnet core is a console app
+        public static void Main(string[] args) // dotnet core 2 is a console app afds
         {
             CreateWebHostBuilder(args).Build().Run();
         }
