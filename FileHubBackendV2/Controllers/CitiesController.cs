@@ -8,6 +8,7 @@ namespace FileHubBackendV2.Controllers
     public class CitiesController : Controller
     {
 
+        [HttpGet]
         public IActionResult GetCities()
         {
             // Use IAction result for returning objects in xml or json. JSONresult is only for json

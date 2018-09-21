@@ -8,6 +8,7 @@ namespace FileHubBackendV2.Controllers
 
     public class FilesController : Controller
     {
+        [HttpGet] // adding non-needed anotation for swagger: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
         public IActionResult GetFiles()
         {
             return Ok(FilesDataStore.Current.Files);
