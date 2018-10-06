@@ -1,25 +1,33 @@
-﻿using FileHubBackendV2.DataStore;
+﻿using FileHubBackendV2.Models;
+using FileHubBackendV2.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace FileHubBackendV2.Controllers
 {
     [Route("api/cities")]
     public class CitiesController : Controller
     {
+        private ICitiesService _citiesService;
+
+        public CitiesController(ICitiesService citiesService)
+        {
+            _citiesService = citiesService;
+        }
 
         [HttpGet]
         public IActionResult GetCities()
         {
             // Use IAction result for returning objects in xml or json. JSONresult is only for json
-            return Ok(CitiesDataStore.Current.Cities);
+            IEnumerable<CityFeDto> cities = _citiesService.GetAllCities();
+            return Ok(cities);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCity(int id)
+        public IActionResult GetCityById(int id)
         {
             // find city
-            var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+            CityFeDto cityToReturn = _citiesService.GetCityById(id);
 
             if (cityToReturn == null)
             {
@@ -27,6 +35,13 @@ namespace FileHubBackendV2.Controllers
 
             }
 
+            return Ok(cityToReturn);
+        }
+
+        [HttpPost()]
+        public IActionResult AddCity(CityFeDto city)
+        {
+            CityFeDto cityToReturn = _citiesService.AddCity(city);
             return Ok(cityToReturn);
         }
     }
