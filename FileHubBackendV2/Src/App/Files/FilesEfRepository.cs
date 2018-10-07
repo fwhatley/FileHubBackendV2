@@ -62,7 +62,6 @@ namespace FileHubBackendV2.Repositories
                 FileName = fileDto.Name,
                 DownloadContentStream = getFileDataStream(id),
                 FileFullPath = getFileFullPathById(id)
-                
             };
 
             return fileDownloadDto;
@@ -143,7 +142,6 @@ namespace FileHubBackendV2.Repositories
             }
 
             return fileDto;
-
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServiceStack.DataAnnotations;
+using System;
 
 namespace FileHubBackendV2.Src.Models
 {
@@ -10,6 +11,7 @@ namespace FileHubBackendV2.Src.Models
     // referenced used: https://www.codeproject.com/Articles/1050468/Data-Transfer-Object-Design-Pattern-in-Csharp
     public class FileRecord
     {
+        [AutoId] // autogenerate guid by postgres
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

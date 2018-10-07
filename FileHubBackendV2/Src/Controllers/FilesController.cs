@@ -20,7 +20,7 @@ namespace FileHubBackendV2.Src.Controllers
             _filesService = filesService;
         }
 
-        [HttpGet] // adding non-needed anotation for swagger: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
+        [HttpGet] // adding non-needed anotation, but swashbuckle 3 needs it: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
         public IActionResult GetFiles()
         {
             var files = _filesService.GetAllFiles();
@@ -30,7 +30,7 @@ namespace FileHubBackendV2.Src.Controllers
         [HttpGet("downloadFile/{id}")]
         public IActionResult DownloadFile(Guid id)
         {
-            // references used: 
+            // For file downloads use File
             // https://www.codeproject.com/Articles/1203408/Upload-Download-Files-in-ASP-NET-Core
             // https://www.c-sharpcorner.com/article/sending-files-from-web-api/
             // PRE-CONDITION
@@ -48,10 +48,10 @@ namespace FileHubBackendV2.Src.Controllers
             }
 
             var contentType = FileHelpers.GetContentType(fileDownloadDto.FileName);
-            var fileFullPath = fileDownloadDto.FileFullPath;
+            var fileName = fileDownloadDto.FileName;
             var contentStream = fileDownloadDto.DownloadContentStream;
 
-            return File(contentStream, contentType, fileFullPath);
+            return File(contentStream, contentType, fileName);
         }
 
         [HttpGet("{id}")]
