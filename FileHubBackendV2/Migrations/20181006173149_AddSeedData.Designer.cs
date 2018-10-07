@@ -36,7 +36,7 @@ namespace FileHubBackendV2.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("FileHubBackendV2.Models.FileFeDto", b =>
+            modelBuilder.Entity("FileHubBackendV2.Models.FileRecord", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -53,7 +53,7 @@ namespace FileHubBackendV2.Migrations
 
                     b.Property<string>("Url");
 
-                    b.Property<string>("tags");
+                    b.Property<string>("Tags");
 
                     b.HasKey("Id");
 

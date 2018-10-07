@@ -4,6 +4,7 @@ using FileHubBackendV2.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 using System.Threading.Tasks;
 
 namespace FileHubBackendV2.Src.Controllers
@@ -27,13 +28,13 @@ namespace FileHubBackendV2.Src.Controllers
         }
 
         [HttpGet("downloadFile/{id}")]
-        public IActionResult DownloadFile(string id)
+        public IActionResult DownloadFile(Guid id)
         {
             // references used: 
             // https://www.codeproject.com/Articles/1203408/Upload-Download-Files-in-ASP-NET-Core
             // https://www.c-sharpcorner.com/article/sending-files-from-web-api/
             // PRE-CONDITION
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id.ToString()))
             {
                 return BadRequest("file id is required for download");
             }
@@ -54,16 +55,16 @@ namespace FileHubBackendV2.Src.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetFile(string id)
+        public IActionResult GetFile(Guid id)
         {
             // PRE-CONDITION
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id.ToString()))
             {
                 return BadRequest("file id is required");
             }
 
             // ACTIONS
-            FileFeDto fileToReturn = _filesService.GetFileById(id);
+            FileRecord fileToReturn = _filesService.GetFileById(id);
             
             if (fileToReturn == null)
             {

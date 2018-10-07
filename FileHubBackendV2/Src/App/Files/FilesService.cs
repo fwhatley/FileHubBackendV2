@@ -1,6 +1,7 @@
 ﻿using FileHubBackendV2.Repositories;
 using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,22 +15,22 @@ namespace FileHubBackendV2.Services
             _filesRepository = filesRepository;
         }
 
-        public FileFeDto GetFileById(string id)
+        public FileRecord GetFileById(Guid id)
         {
             return _filesRepository.GetFileById(id);
         }
 
-        public IEnumerable<FileFeDto> GetAllFiles()
+        public IEnumerable<FileRecord> GetAllFiles()
         {
             return _filesRepository.GetAllFiles();
         }
 
-        public async Task<FileFeDto> UploadFile(IFormFile file)
+        public async Task<FileRecord> UploadFile(IFormFile file)
         {
             return await _filesRepository.UploadFile(file);
         }
 
-        public FileDownloadDto GetFileDownloadStreamById(string id)
+        public FileDownloadDto GetFileDownloadStreamById(Guid id)
         {
             return _filesRepository.GetFileDownloadStreamById(id);
         }

@@ -12,50 +12,50 @@ namespace FileHubBackendV2.Repositories
     {
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        private List<FileFeDto> FilesList;
+        private List<FileRecord> FilesList;
 
         public FakeFilesRepository(IHostingEnvironment environment)
         {
             _hostingEnvironment = environment;
-            FilesList = new List<FileFeDto>()
+            FilesList = new List<FileRecord>()
             {
-                new FileFeDto()
+                new FileRecord()
                 {
-                    Id = "1",
+                    Id = new Guid(),
                     Description = "Description 1",
                     Name = "name 1",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileRecord()
                 {
-                    Id = "2",
+                    Id = new Guid(),
                     Description = "Description 2",
                     Name = "name 2",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
 
                 },
-                new FileFeDto()
+                new FileRecord()
                 {
-                    Id = "3",
+                    Id = new Guid(),
                     Description = "Description 3",
                     Name = "name 3",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileRecord()
                 {
-                    Id = "4",
+                    Id = new Guid(),
                     Description = "Description 4",
                     Name = "name 4",
                     Url = "https://via.placeholder.com/350x150",
@@ -63,13 +63,13 @@ namespace FileHubBackendV2.Repositories
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileRecord()
                 {
-                    Id = "5",
+                    Id = new Guid(),
                     Description = "Description 5",
                     Name = "name 5",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
@@ -77,7 +77,7 @@ namespace FileHubBackendV2.Repositories
             };
         }
 
-        public async Task<FileDownloadDto> GetFileById(string id)
+        public FileDownloadDto GetFileDownloadStreamById(Guid id)
         {
             var file = FilesList.FirstOrDefault(f => f.Id == id);
 
@@ -87,25 +87,25 @@ namespace FileHubBackendV2.Repositories
             return fileDownload;
         }
 
-        FileFeDto IFilesRepository.GetFileById(string id)
+        public FileRecord GetFileById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<FileFeDto> GetAllFiles()
+        public IEnumerable<FileRecord> GetAllFiles()
         {
             return FilesList;
         }
 
-        public async Task<FileFeDto> UploadFile(IFormFile file)
+        public FileRecord UploadFile(IFormFile file)
         {
 
-            var fileDto = new FileFeDto()
+            var fileDto = new FileRecord()
             {
                 CreatedUtc = DateTime.UtcNow,
                 DeletedUtc = DateTime.MaxValue,
                 Description = "This is file description",
-                Id = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid(),
                 Name = file.FileName
             };
 
@@ -115,7 +115,7 @@ namespace FileHubBackendV2.Repositories
 
         }
 
-        public FileDownloadDto GetFileDownloadStreamById(string id)
+        Task<FileRecord> IFilesRepository.UploadFile(IFormFile file)
         {
             throw new NotImplementedException();
         }

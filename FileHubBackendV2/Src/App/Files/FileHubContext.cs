@@ -6,7 +6,7 @@ namespace FileHubBackendV2.Repositories
 {
     public class FileHubContext: DbContext
     {
-        public DbSet<FileFeDto> Files { get; set; }
+        public DbSet<FileRecord> Files { get; set; }
 
         public FileHubContext() {
             

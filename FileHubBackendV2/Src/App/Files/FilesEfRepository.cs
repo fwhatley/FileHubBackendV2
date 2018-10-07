@@ -9,19 +9,26 @@ using System.Threading.Tasks;
 
 namespace FileHubBackendV2.Repositories
 {
-    public class FilesRepository : IFilesRepository
+    /// <summary>
+    // Ef: stands for entity framework. We can switch back to using EF and MSqlServer by injecting this class and using migrations
+    // Pg: stands for postgress
+    // The reason we are not using EF is because .net core 2.1 doesn't support postgress asof 10/4/2018
+    // Instead we are using OrmLite.PostgresSQL.Core 5.4
+    /// </summary>
+
+    public class FilesEfRepository : IFilesRepository
     {
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public FilesRepository(IHostingEnvironment environment)
+        public FilesEfRepository(IHostingEnvironment environment)
         {
             _hostingEnvironment = environment;
         }
 
-        public FileFeDto GetFileById(string id)
+        public FileRecord GetFileById(Guid id)
         {
             
-            FileFeDto file = new FileFeDto();
+            FileRecord file = new FileRecord();
             using (var db = new FileHubContext())
             {
                 Console.Write("Getting by id");
@@ -36,9 +43,9 @@ namespace FileHubBackendV2.Repositories
             return file;
         }
 
-        public FileDownloadDto GetFileDownloadStreamById(string id)
+        public FileDownloadDto GetFileDownloadStreamById(Guid id)
         {
-            FileFeDto fileDto = new FileFeDto();
+            FileRecord fileDto = new FileRecord();
             using (var db = new FileHubContext())
             {
                 Console.Write("Getting by id");
@@ -67,7 +74,7 @@ namespace FileHubBackendV2.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private MemoryStream getFileDataStream(string id)
+        private MemoryStream getFileDataStream(Guid id)
         {
             var fullFilePath = getFileFullPathById(id);
             
@@ -79,17 +86,17 @@ namespace FileHubBackendV2.Repositories
             return dataStream;
         }
 
-        private string getFileFullPathById(string id)
+        private string getFileFullPathById(Guid id)
         {
 
             var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, FhConstants.UploadsFolderName);
-            var filePath = Path.Combine(pathToUploadFolder, id);
+            var filePath = Path.Combine(pathToUploadFolder, id.ToString());
             return filePath;
         }
 
-        public IEnumerable<FileFeDto> GetAllFiles()
+        public IEnumerable<FileRecord> GetAllFiles()
         {
-            IEnumerable<FileFeDto> files = new List<FileFeDto>();
+            IEnumerable<FileRecord> files = new List<FileRecord>();
             using (var db = new FileHubContext())
             {
                 Console.Write("Getting all");
@@ -103,19 +110,18 @@ namespace FileHubBackendV2.Repositories
             return files;
         }
 
-        public async Task<FileFeDto> UploadFile(IFormFile file)
+        public async Task<FileRecord> UploadFile(IFormFile file)
         {
             // PRE CONDITIONS
             if (file.Length <= 0) throw new Exception("Filename must exist");
 
             // ARRANGE
-            var fileDto = new FileFeDto()
+            var fileDto = new FileRecord()
             {
                 CreatedUtc = DateTime.UtcNow,
                 UpdatedUtc = DateTime.UtcNow,
                 DeletedUtc = DateTime.MaxValue,
                 Description = "This is file description",
-                Id = Guid.NewGuid().ToString(),
                 Name = file.FileName
             };
 

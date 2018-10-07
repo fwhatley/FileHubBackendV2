@@ -1,6 +1,6 @@
-﻿using System;
-using FileHubBackendV2.Src.Models;
+﻿using FileHubBackendV2.Src.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace FileHubBackendV2.Src.Extensions
 {
@@ -11,44 +11,44 @@ namespace FileHubBackendV2.Src.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<FileFeDto>().HasData(
-                new FileFeDto
+            modelBuilder.Entity<FileRecord>().HasData(
+                new FileRecord
                 {
-                    Id = "1",
+                    Id = new Guid(),
                     Description = "Description 1",
                     Name = "name 1",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto
+                new FileRecord
                 {
-                    Id = "2",
+                    Id = new Guid(),
                     Description = "Description 2",
                     Name = "name 2",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
 
                 },
-                new FileFeDto
+                new FileRecord
                 {
-                    Id = "3",
+                    Id = new Guid(),
                     Description = "Description 3",
                     Name = "name 3",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto
+                new FileRecord
                 {
-                    Id = "4",
+                    Id = new Guid(),
                     Description = "Description 4",
                     Name = "name 4",
                     Url = "https://via.placeholder.com/350x150",
@@ -56,13 +56,13 @@ namespace FileHubBackendV2.Src.Extensions
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto
+                new FileRecord
                 {
-                    Id = "5",
+                    Id = new Guid(),
                     Description = "Description 5",
                     Name = "name 5",
                     Url = "https://via.placeholder.com/350x150",
-                    //tags = new List<string>(){"FC", "Aesop"},
+                    //Tags = new List<string>(){"FC", "Aesop"},
                     CreatedUtc = DateTime.Now,
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue

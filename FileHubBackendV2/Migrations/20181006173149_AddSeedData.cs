@@ -9,7 +9,7 @@ namespace FileHubBackendV2.Migrations
         {
             migrationBuilder.InsertData(
                 table: "Files",
-                columns: new[] { "Id", "CreatedUtc", "DeletedUtc", "Description", "Name", "UpdatedUtc", "Url", "tags" },
+                columns: new[] { "Id", "CreatedUtc", "DeletedUtc", "Description", "Name", "UpdatedUtc", "Url", "Tags" },
                 values: new object[,]
                 {
                     { "1", new DateTime(2018, 10, 6, 13, 31, 49, 156, DateTimeKind.Local), new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified), "Description 1", "name 1", new DateTime(9999, 12, 31, 23, 59, 59, 999, DateTimeKind.Unspecified), "https://via.placeholder.com/350x150", null },

@@ -2,8 +2,12 @@
 using FileHubBackendV2.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceStack.Data;
+using ServiceStack.OrmLite;
+using ServiceStack.OrmLite.PostgreSQL;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -12,6 +16,13 @@ namespace FileHubBackendV2
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -36,8 +47,17 @@ namespace FileHubBackendV2
 
                 services.AddMvc();
                 services.AddScoped<IFilesService, FilesService>();
-                //services.AddSingleton<IFilesRepository, FakeFilesRepository>();
-                services.AddSingleton<IFilesRepository, FilesRepository>();
+                //services.AddSingleton<IFilesRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
+                //services.AddSingleton<IFilesRepository, FilesEfRepository>(); // Enable this if you want to use EF
+                services.AddSingleton<IFilesRepository, FilesPgRepository>(); // Enable this if you want to use OrmLite
+
+                // set up db OrmLite with Postgres
+                // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite
+                var dbFactory = new OrmLiteConnectionFactory(_configuration.GetConnectionString("PgSqlDatabase"), new PostgreSqlDialectProvider()
+                {
+                    NamingStrategy = new OrmLiteNamingStrategyBase()
+                });
+                services.AddSingleton<IDbConnectionFactory>(dbFactory);
 
             }
             catch (Exception e)
