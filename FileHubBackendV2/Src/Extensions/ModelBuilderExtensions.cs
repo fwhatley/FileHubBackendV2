@@ -1,25 +1,18 @@
-﻿using FileHubBackendV2.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using FileHubBackendV2.Src.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace FileHubBackendV2.Repositories
+namespace FileHubBackendV2.Src.Extensions
 {
-    public class FakeFilesRepository : IFilesRepository
+    /// <summary>
+    /// Tip from https://www.learnentityframeworkcore.com/migrations/seeding
+    /// </summary>
+    public static class ModelBuilderExtensions
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-
-        private List<FileFeDto> FilesList;
-
-        public FakeFilesRepository(IHostingEnvironment environment)
+        public static void Seed(this ModelBuilder modelBuilder)
         {
-            _hostingEnvironment = environment;
-            FilesList = new List<FileFeDto>()
-            {
-                new FileFeDto()
+            modelBuilder.Entity<FileFeDto>().HasData(
+                new FileFeDto
                 {
                     Id = "1",
                     Description = "Description 1",
@@ -30,7 +23,7 @@ namespace FileHubBackendV2.Repositories
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileFeDto
                 {
                     Id = "2",
                     Description = "Description 2",
@@ -42,7 +35,7 @@ namespace FileHubBackendV2.Repositories
                     DeletedUtc = DateTime.MaxValue
 
                 },
-                new FileFeDto()
+                new FileFeDto
                 {
                     Id = "3",
                     Description = "Description 3",
@@ -53,7 +46,7 @@ namespace FileHubBackendV2.Repositories
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileFeDto
                 {
                     Id = "4",
                     Description = "Description 4",
@@ -63,7 +56,7 @@ namespace FileHubBackendV2.Repositories
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 },
-                new FileFeDto()
+                new FileFeDto
                 {
                     Id = "5",
                     Description = "Description 5",
@@ -74,50 +67,7 @@ namespace FileHubBackendV2.Repositories
                     UpdatedUtc = DateTime.MaxValue,
                     DeletedUtc = DateTime.MaxValue
                 }
-            };
-        }
-
-        public async Task<FileDownloadDto> GetFileById(string id)
-        {
-            var file = FilesList.FirstOrDefault(f => f.Id == id);
-
-            // map file contents
-            FileDownloadDto fileDownload = new FileDownloadDto();
-
-            return fileDownload;
-        }
-
-        FileFeDto IFilesRepository.GetFileById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<FileFeDto> GetAllFiles()
-        {
-            return FilesList;
-        }
-
-        public async Task<FileFeDto> UploadFile(IFormFile file)
-        {
-
-            var fileDto = new FileFeDto()
-            {
-                CreatedUtc = DateTime.UtcNow,
-                DeletedUtc = DateTime.MaxValue,
-                Description = "This is file description",
-                Id = Guid.NewGuid().ToString(),
-                Name = file.FileName
-            };
-
-            FilesList.Add(fileDto);
-
-            return fileDto;
-
-        }
-
-        public FileDownloadDto GetFileDownloadStreamById(string id)
-        {
-            throw new NotImplementedException();
+            );
         }
     }
 }

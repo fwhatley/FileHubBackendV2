@@ -35,9 +35,7 @@ namespace FileHubBackendV2
                 services.AddSwaggerExamples();
 
                 services.AddMvc();
-                services.AddScoped<ICitiesService, CitiesService>();
                 services.AddScoped<IFilesService, FilesService>();
-                services.AddSingleton<ICitiesRepository, CitiesRepository>();
                 //services.AddSingleton<IFilesRepository, FakeFilesRepository>();
                 services.AddSingleton<IFilesRepository, FilesRepository>();
 

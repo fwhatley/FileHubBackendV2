@@ -1,12 +1,12 @@
-﻿using FileHubBackendV2.Models;
-using FileHubBackendV2.Services;
+﻿using FileHubBackendV2.Services;
+using FileHubBackendV2.Src.Models;
 using FileHubBackendV2.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using System.Threading.Tasks;
 
-namespace FileHubBackendV2.Controllers
+namespace FileHubBackendV2.Src.Controllers
 {
     [Route("api/files")]
 

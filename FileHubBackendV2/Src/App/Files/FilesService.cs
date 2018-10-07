@@ -1,5 +1,5 @@
-﻿using FileHubBackendV2.Models;
-using FileHubBackendV2.Repositories;
+﻿using FileHubBackendV2.Repositories;
+using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;

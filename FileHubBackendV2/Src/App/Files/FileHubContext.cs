@@ -1,12 +1,11 @@
-﻿using FileHubBackendV2.Extensions;
-using FileHubBackendV2.Models;
+﻿using FileHubBackendV2.Src.Extensions;
+using FileHubBackendV2.Src.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FileHubBackendV2.Repositories
 {
     public class FileHubContext: DbContext
     {
-        public DbSet<CityFeDto> Cities { get; set; }
         public DbSet<FileFeDto> Files { get; set; }
 
         public FileHubContext() {

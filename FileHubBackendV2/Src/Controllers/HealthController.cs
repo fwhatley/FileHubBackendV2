@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FileHubBackendV2.Controllers
+namespace FileHubBackendV2.Src.Controllers
 {
     [Route("api/health")]
     public class HealthController : Controller

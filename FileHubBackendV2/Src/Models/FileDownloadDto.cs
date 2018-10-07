@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FileHubBackendV2.Models
+namespace FileHubBackendV2.Src.Models
 {
     // Dto: prefix for data transfer object, have no business logic
     // Bo : prefix for business object needs to have business logic, eg., required fields
