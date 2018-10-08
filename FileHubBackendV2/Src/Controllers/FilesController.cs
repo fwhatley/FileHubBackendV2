@@ -24,6 +24,7 @@ namespace FileHubBackendV2.Src.Controllers
         public IActionResult GetFiles()
         {
             var files = _filesService.GetAllFiles();
+
             return Ok(files);
         }
 
@@ -34,18 +35,12 @@ namespace FileHubBackendV2.Src.Controllers
             // https://www.codeproject.com/Articles/1203408/Upload-Download-Files-in-ASP-NET-Core
             // https://www.c-sharpcorner.com/article/sending-files-from-web-api/
             // PRE-CONDITION
-            if (string.IsNullOrEmpty(id.ToString()))
-            {
-                return BadRequest("file id is required for download");
-            }
+            if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
 
             // ACTIONS
             FileDownloadDto fileDownloadDto = _filesService.GetFileDownloadStreamById(id);
             
-            if (fileDownloadDto == null)
-            {
-                return NotFound();
-            }
+            if (fileDownloadDto == null) return NotFound();
 
             var contentType = FileHelpers.GetContentType(fileDownloadDto.FileName);
             var fileName = fileDownloadDto.FileName;
@@ -58,18 +53,12 @@ namespace FileHubBackendV2.Src.Controllers
         public IActionResult GetFile(Guid id)
         {
             // PRE-CONDITION
-            if (string.IsNullOrEmpty(id.ToString()))
-            {
-                return BadRequest("file id is required");
-            }
+            if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
 
             // ACTIONS
             FileRecord fileToReturn = _filesService.GetFileById(id);
-            
-            if (fileToReturn == null)
-            {
-                return NotFound();
-            }
+
+            if (fileToReturn == null) return NotFound();
 
             return Ok(fileToReturn);
         }
@@ -78,6 +67,11 @@ namespace FileHubBackendV2.Src.Controllers
         [HttpPost()]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
+            // PRE-CONDITION
+            if (file == null) return BadRequest("file is required");
+            if (file.Length <= 0) return BadRequest("file is required");
+
+            // ACTIONS
             var fileDto = await _filesService.UploadFile(file);
             return Ok(fileDto);
         }
