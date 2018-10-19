@@ -74,6 +74,9 @@ namespace FileHubBackendV2
             // Enable middleware to serve generated Swagger as a JSON endpoint. 
             app.UseSwagger();
 
+            // For the wwwroot folder
+            app.UseStaticFiles();
+
             // Enable cors for any call: https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.1
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().WithOrigins("https://file-hub-frontend.herokuapp.com"));
 
