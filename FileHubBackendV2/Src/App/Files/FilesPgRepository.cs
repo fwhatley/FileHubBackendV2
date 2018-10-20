@@ -91,7 +91,7 @@ namespace FileHubBackendV2.Repositories
             // in linux webrootpath will be null
             if (string.IsNullOrWhiteSpace(_hostingEnvironment.WebRootPath))
             {
-                _hostingEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                _hostingEnvironment.WebRootPath = "/var/FileHubBackendV2/wwwroot"; // TODO: hard code the path for linux for now. Needs to change bc it will break if app gets deployed to a different folder
             }
 
             var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, FhConstants.UploadsFolderName);
