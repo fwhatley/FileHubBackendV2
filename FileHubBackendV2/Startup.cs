@@ -53,7 +53,8 @@ namespace FileHubBackendV2
 
                 // set up db OrmLite with Postgres
                 // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite
-                var dbFactory = new OrmLiteConnectionFactory(_configuration.GetConnectionString("PgSqlDatabase"), new PostgreSqlDialectProvider()
+                // var dbFactory = new OrmLiteConnectionFactory(_configuration.GetConnectionString("PgSqlDatabase"), new PostgreSqlDialectProvider()
+                var dbFactory = new OrmLiteConnectionFactory("Server=localhost;Port=5432;Database=filehub_db;User Id=filehub_owner;Password=filehub_owner_password", new PostgreSqlDialectProvider()
                 {
                     NamingStrategy = new OrmLiteNamingStrategyBase()
                 });
