@@ -87,6 +87,12 @@ namespace FileHubBackendV2.Repositories
 
         private string getFileFullPathById(Guid id)
         {
+            // prevent null reference in linux: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
+            // in linux webrootpath will be null
+            if (string.IsNullOrWhiteSpace(_hostingEnvironment.WebRootPath))
+            {
+                _hostingEnvironment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            }
 
             var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, FhConstants.UploadsFolderName);
             var filePath = Path.Combine(pathToUploadFolder, id.ToString());
