@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x #echo on
+#set -x #echo on
 
 echo "INFO - publishing app: FileHubBackendV2"
 dotnet publish
