@@ -1,6 +1,7 @@
 ﻿using FileHubBackendV2.Services;
 using FileHubBackendV2.Src.Models;
 using FileHubBackendV2.Utils;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
@@ -63,6 +64,7 @@ namespace FileHubBackendV2.Src.Controllers
             return Ok(fileToReturn);
         }
 
+        [EnableCors("AllowAll")]
         [AddSwaggerFileUploadButton]
         [HttpPost()]
         public async Task<IActionResult> UploadFile(IFormFile file)
