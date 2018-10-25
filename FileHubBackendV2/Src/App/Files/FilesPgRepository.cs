@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FileHubBackendV2.Repositories
@@ -115,12 +116,13 @@ namespace FileHubBackendV2.Repositories
             // add urls to the file for download
             foreach (var fileRecord in fileRecords)
             {
-                fileRecord.Url = $"{FhConstants.DownloadFileEndpointUrl}{fileRecord.Id}";
+                var fullPathToFile = $"{GetHostIpAddress()}/api/files/downloadFile/{fileRecord.Id}";
+                fileRecord.Url = fullPathToFile;
             }
 
             return fileRecords;
         }
-
+        
         public async Task<FileRecord> UploadFile(IFormFile file)
         {
             // ARRANGE
@@ -155,6 +157,16 @@ namespace FileHubBackendV2.Repositories
             }
 
             return fileRecord;
+        }
+
+        private string GetHostIpAddress()
+        {
+            string strHostName = System.Net.Dns.GetHostName();
+            //IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName()); <-- Obsolete
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(strHostName);
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+
+            return ipAddress.ToString();
         }
 
     }
