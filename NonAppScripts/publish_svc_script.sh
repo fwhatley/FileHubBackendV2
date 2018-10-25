@@ -1,8 +1,21 @@
 #!/bin/bash
 #set -x #echo on
 
+# INSTRUCTIONS how to auto deploy SVC
+# 1. clone SVC into home directory ~/
+# 2. place this script in ~/
+# 3. run chmod 777 publish_svc_script.sh
+# 4. run ./publish_svc_script.sh
+
+
 echo "INFO - deleting old app: FileHubBackendV2"
 rm -rf /var/FileHubBackendV2
+
+echo "INFO - moving into directory: /FileHubBackendV2"
+cd ~/FileHubBackendV2
+
+echo "INFO - pulling latest changes"
+git pull
 
 echo "INFO - publishing app: FileHubBackendV2"
 dotnet publish
