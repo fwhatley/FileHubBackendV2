@@ -29,7 +29,18 @@ namespace FileHubBackendV2
         {
             try
             {
-                services.AddCors();
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll",
+                        builder =>
+                        {
+                            builder
+                                .AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+                        });
+                });
 
                 // Register the Swagger generator, defining 1 or more Swagger documents
                 services.AddSwaggerGen(c =>
@@ -76,11 +87,12 @@ namespace FileHubBackendV2
             // Enable middleware to serve generated Swagger as a JSON endpoint. 
             app.UseSwagger();
 
+            // Use my cors policy
+            // Enable cors for any call: https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.1, make sure to add cservices.AddCors(); in ConfigureServices() before
+            app.UseCors("AllowAll");
+
             // For the wwwroot folder
             app.UseStaticFiles();
-
-            // Enable cors for any call: https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.1, make sure to add cservices.AddCors(); in ConfigureServices() before
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
