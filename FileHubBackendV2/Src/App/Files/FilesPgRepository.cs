@@ -1,6 +1,7 @@
 ﻿using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using System;
@@ -21,11 +22,13 @@ namespace FileHubBackendV2.Repositories
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IDbConnectionFactory _dbConnectionFactory;
+        private readonly IConfiguration _configuration;
 
-        public FilesPgRepository(IHostingEnvironment environment, IDbConnectionFactory dbConnectionFactory)
+        public FilesPgRepository(IHostingEnvironment environment, IDbConnectionFactory dbConnectionFactory, IConfiguration configuration)
         {
             _hostingEnvironment = environment;
             _dbConnectionFactory = dbConnectionFactory;
+            _configuration = configuration;
         }
 
         public FileRecord GetFileById(Guid id)
@@ -94,7 +97,9 @@ namespace FileHubBackendV2.Repositories
                 _hostingEnvironment.WebRootPath = "/var/FileHubBackendV2/wwwroot"; // TODO: hard code the path for linux for now. Needs to change bc it will break if app gets deployed to a different folder
             }
 
-            var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, FhConstants.UploadsFolderName);
+            var folderName = _configuration.GetValue<string>("Data:UploadsFolderName");
+
+            var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, folderName);
             var filePath = Path.Combine(pathToUploadFolder, id.ToString());
             return filePath;
         }
@@ -115,7 +120,8 @@ namespace FileHubBackendV2.Repositories
             // add urls to the file for download
             foreach (var fileRecord in fileRecords)
             {
-                var fullPathToFile = $"{FhConstants.FileHubBaseUrl}/api/files/downloadFile/{fileRecord.Id}";
+                var baseUrl = _configuration.GetValue<string>("ApplicationBaseUrl");
+                var fullPathToFile = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
                 fileRecord.Url = fullPathToFile;
             }
 

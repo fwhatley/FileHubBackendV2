@@ -1,6 +1,7 @@
 ﻿using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,10 +20,12 @@ namespace FileHubBackendV2.Repositories
     public class FilesEfRepository : IFilesRepository
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IConfiguration _configuration;
 
-        public FilesEfRepository(IHostingEnvironment environment)
+        public FilesEfRepository(IHostingEnvironment environment, IConfiguration configuration)
         {
             _hostingEnvironment = environment;
+            _configuration = configuration;
         }
 
         public FileRecord GetFileById(Guid id)
@@ -87,8 +90,8 @@ namespace FileHubBackendV2.Repositories
 
         private string getFileFullPathById(Guid id)
         {
-
-            var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, FhConstants.UploadsFolderName);
+            var folderName = _configuration.GetValue<string>("Data:UploadsFolderName");
+            var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, folderName);
             var filePath = Path.Combine(pathToUploadFolder, id.ToString());
             return filePath;
         }
