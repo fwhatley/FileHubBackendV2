@@ -16,11 +16,11 @@ namespace FileHubBackendV2
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        public readonly IConfiguration Configuration;
 
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
+            Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -29,6 +29,8 @@ namespace FileHubBackendV2
         {
             try
             {
+
+                // Add cors: https://stackoverflow.com/questions/31942037/how-to-enable-cors-in-asp-net-core
                 services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAll",
@@ -58,6 +60,7 @@ namespace FileHubBackendV2
                 services.AddSwaggerExamples();
 
                 services.AddMvc();
+                services.AddSingleton(Configuration); // Whenever we use IConfigration there we are going to get instance of Configuration: https://www.c-sharpcorner.com/article/setting-and-reading-values-from-app-settings-json-in-net-core/
                 services.AddScoped<IFilesService, FilesService>();
                 //services.AddSingleton<IFilesRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
                 //services.AddSingleton<IFilesRepository, FilesEfRepository>(); // Enable this if you want to use EF
@@ -65,11 +68,12 @@ namespace FileHubBackendV2
 
                 // set up db OrmLite with Postgres
                 // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite
-                // var dbFactory = new OrmLiteConnectionFactory(_configuration.GetConnectionString("PgSqlDatabase"), new PostgreSqlDialectProvider()
-                var dbFactory = new OrmLiteConnectionFactory("Server=localhost;Port=5432;Database=filehub_db;User Id=filehub_owner;Password=filehub_owner_password", new PostgreSqlDialectProvider()
+                var connectionString = Configuration.GetValue<string>("Data:ConnectionStrings:PgSqlDatabase");
+                var dbFactory = new OrmLiteConnectionFactory(connectionString, new PostgreSqlDialectProvider()
                 {
                     NamingStrategy = new OrmLiteNamingStrategyBase()
                 });
+
                 services.AddSingleton<IDbConnectionFactory>(dbFactory);
 
             }
