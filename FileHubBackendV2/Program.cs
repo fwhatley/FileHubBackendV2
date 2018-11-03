@@ -7,15 +7,12 @@ namespace FileHubBackendV2
 {
     public class Program
     {
-        public static void Main(string[] args) // dotnet core 2 is a console app afds
+        public static void Main(string[] args) // dotnet core 2 is a console app
         {
-            // for dev
-            //CreateWebHostBuilder(args).Build().Run();
-
-            // added for prod serving
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("hosting.json", optional: true) //hosting file is only for prod
+                //.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // specifig env vars for different environments: https://dotnetcoretutorials.com/2017/05/03/environments-asp-net-core/, https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/index?view=aspnetcore-2.1
+                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .Build();
 
             CreateWebHostBuilder(args)
@@ -30,5 +27,6 @@ namespace FileHubBackendV2
                 .CaptureStartupErrors(true)
                 .UseSetting("detailedErrors", "true")
                 .UseStartup<Startup>();
+
     }
 }
