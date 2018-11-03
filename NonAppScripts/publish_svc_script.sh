@@ -27,8 +27,8 @@ dotnet publish
 echo "INFO - copying new app to be served: FileHubBackendV2"
 sudo cp -a ~/FileHubBackendV2/FileHubBackendV2/bin/Debug/netcoreapp2.1/publish/ /var/FileHubBackendV2
 
-echo "INFO - change wwwroot/uploads folder permissions so all users have read+write access"
-chmod -R 766 /var/FileHubBackendV2/wwwroot/
+echo "INFO - change wwwroot/uploads folder permissions so all users have read+write+exec access" # without exec, app cannot read files
+chmod -R 777 /var/FileHubBackendV2/wwwroot/
 
 echo "INFO - starting supervisor service"
 sudo service supervisor start
