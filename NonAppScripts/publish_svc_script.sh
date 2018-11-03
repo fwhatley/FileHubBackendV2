@@ -8,6 +8,10 @@
 # 4. run ./publish_svc_script.sh
 
 
+echo "INFO - =========== DEPLOYING SVC APPLICATION ================"
+echo "INFO - stopping supervisor service"
+sudo service supervisor stop
+
 echo "INFO - deleting old app: FileHubBackendV2"
 rm -rf /var/FileHubBackendV2
 
@@ -23,7 +27,18 @@ dotnet publish
 echo "INFO - copying new app to be served: FileHubBackendV2"
 sudo cp -a ~/FileHubBackendV2/FileHubBackendV2/bin/Debug/netcoreapp2.1/publish/ /var/FileHubBackendV2
 
+echo "INFO - change wwwroot/uploads folder permissions so all users have read+write access"
+chmod -R 766 /var/FileHubBackendV2/wwwroot/
+
+echo "INFO - starting supervisor service"
+sudo service supervisor start
+
+echo "INFO - Helpful commands to see supervisor and app logs"
+echo "INFO - Supervisor: sudo tail -f /var/log/supervisor/supervisord.log"
+echo "INFO - App logs: sudo tail -f /var/log/dotnettest.out.log"
+echo "INFO - =========== DONE DEPLOYING SVC APPLICATION ================"
+
 # no need to start bc supervisor automatically serves it
-#echo "INFO - serving app: FileHubBackendV2"
+#echo "INFO - serving app without supervisor: FileHubBackendV2"
 #sudo /usr/bin/dotnet /var/FileHubBackendV2/FileHubBackendV2.dll --server.urls:https://*:5000
 
