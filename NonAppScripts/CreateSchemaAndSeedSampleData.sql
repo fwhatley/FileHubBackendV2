@@ -1,6 +1,6 @@
 -- Run with postgress root user
 -- Execute the command below to run this whole script like this in a command prompt
----- psql -U postgres -f CreateSchemaAndSeedSampleData.sql
+---- Linux/Windows: psql -U postgres -f CreateSchemaAndSeedSampleData.sql
 
 -- create user and database
 --DROP USER IF EXISTS filehub_owner;
@@ -15,7 +15,7 @@ CREATE DATABASE filehub_db OWNER filehub_owner;
 DROP TABLE IF EXISTS "FileRecord";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE "FileRecord" (
-	"Id" uuid DEFAULT uuid_generate_v4 (), -- if id is not provided pg will automatically generate a guid for id
+	"Id" uuid DEFAULT uuid_generate_v4 (), -- if id is not provided pg will automatically generate a guid for id. This is an extension needed for postgress 10
 	"Name" varchar (300) NOT NULL,
 	"Description" varchar (300),
 	"Url" varchar (300),
