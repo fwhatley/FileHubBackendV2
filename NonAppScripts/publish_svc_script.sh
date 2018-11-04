@@ -2,10 +2,15 @@
 #set -x #echo on
 
 # INSTRUCTIONS how to auto deploy SVC
+#
+# First Time Only
 # 1. clone SVC into home directory ~/
 # 2. place this script in ~/
 # 3. run chmod 777 publish_svc_script.sh
 # 4. run ./publish_svc_script.sh
+#
+# Second Time
+# - repeat step 4
 
 
 echo "INFO - =========== DEPLOYING SVC APPLICATION ================"
