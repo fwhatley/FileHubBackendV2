@@ -35,7 +35,7 @@ sudo service supervisor start
 
 echo "INFO - Helpful commands to see supervisor and app logs"
 echo "INFO - Supervisor: sudo tail -f /var/log/supervisor/supervisord.log"
-echo "INFO - App logs: sudo tail -f /var/log/dotnettest.out.log"
+echo "INFO - App logs: sudo tail -f /var/log/FileHubBackendV2.out.log"
 echo "INFO - =========== DONE DEPLOYING SVC APPLICATION ================"
 
 # no need to start bc supervisor automatically serves it
