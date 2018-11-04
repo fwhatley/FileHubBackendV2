@@ -12,8 +12,12 @@
 # Second Time
 # - repeat step 4
 
+echo "INFO - =========== RESETING DB ================"
+psql -U postgres -f CreateSchemaAndSeedSampleData.sql
+echo "INFO - =========== DONE RESETING DB ================"
 
 echo "INFO - =========== DEPLOYING SVC APPLICATION ================"
+
 echo "INFO - stopping supervisor service"
 sudo service supervisor stop
 
@@ -41,6 +45,7 @@ sudo service supervisor start
 echo "INFO - Helpful commands to see supervisor and app logs"
 echo "INFO - Supervisor: sudo tail -f /var/log/supervisor/supervisord.log"
 echo "INFO - App logs: sudo tail -f /var/log/FileHubBackendV2.out.log"
+
 echo "INFO - =========== DONE DEPLOYING SVC APPLICATION ================"
 
 # no need to start bc supervisor automatically serves it
