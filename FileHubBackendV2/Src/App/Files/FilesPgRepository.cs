@@ -42,6 +42,12 @@ namespace FileHubBackendV2.Repositories
                 fileRecord = query.FirstOrDefault();
             }
 
+            if (fileRecord == null)
+            {
+                throw new Exception($"File with id doesn't exist: {id}");
+            }
+            fileRecord.Url = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
+
             return fileRecord;
         }
 
