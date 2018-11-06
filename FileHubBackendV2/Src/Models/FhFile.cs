@@ -9,18 +9,15 @@ namespace FileHubBackendV2.Src.Models
     //  - Each prop should math a column
     //  - don't add a property if it doesn't exist in the table
     // referenced used: https://www.codeproject.com/Articles/1050468/Data-Transfer-Object-Design-Pattern-in-Csharp
-    public class FileRecord
+    // prefixing with Fh becaue of class clashes with File.io
+    public class FhFile
     {
         [AutoId] // autogenerate guid by postgres
         public Guid Id { get; set; }
         [Required]
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Url { get; set; }
-        public string Tags { get; set; }
-        public DateTime CreatedUtc { get; set; }
-        public DateTime UpdatedUtc { get; set; }
-        public DateTime DeletedUtc { get; set; }
+        public Guid FileRecordId { get; set; }
+        [Required]
+        public string FileName { get; set; }
     }
 
 }

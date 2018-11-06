@@ -9,6 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Src\App\FileRecords\FakeFilesRepository.cs.forLater" />
+    <None Remove="Src\App\FileRecords\FileHubContext.cs.forLatter" />
+    <None Remove="Src\App\FileRecords\FilesEfRepository.cs.forLatter" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DbScripts\" />
   </ItemGroup>
 

@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Threading.Tasks;
 
-namespace FileHubBackendV2.Src.Controllers
+namespace FileHubBackendV2.Controllers
 {
     [Route("api/files")]
 
@@ -24,7 +24,7 @@ namespace FileHubBackendV2.Src.Controllers
         [HttpGet] // adding non-needed anotation, but swashbuckle 3 needs it: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
         public IActionResult GetFiles()
         {
-            var files = _filesService.GetAllFiles();
+            var files = _filesService.GetFiles();
 
             return Ok(files);
         }
@@ -32,7 +32,7 @@ namespace FileHubBackendV2.Src.Controllers
         [HttpGet("downloadFile/{id}")]
         public IActionResult DownloadFile(Guid id)
         {
-            // For file downloads use File
+            // For file downloads use FhFile
             // https://www.codeproject.com/Articles/1203408/Upload-Download-Files-in-ASP-NET-Core
             // https://www.c-sharpcorner.com/article/sending-files-from-web-api/
             // PRE-CONDITION
@@ -57,24 +57,33 @@ namespace FileHubBackendV2.Src.Controllers
             if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
 
             // ACTIONS
-            FileRecord fileToReturn = _filesService.GetFileById(id);
+            FhFile fhFileToReturn = _filesService.GetFile(id);
 
-            if (fileToReturn == null) return NotFound();
+            if (fhFileToReturn == null) return NotFound();
 
-            return Ok(fileToReturn);
+            return Ok(fhFileToReturn);
         }
 
         [EnableCors("AllowAll")]
         [AddSwaggerFileUploadButton]
         [HttpPost()]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        // aka upload file
+        public async Task<IActionResult> CreateFile(IFormFile formFile, Guid fileRecordId, string fileName)
         {
             // PRE-CONDITION
-            if (file == null) return BadRequest("file is required");
-            if (file.Length <= 0) return BadRequest("file is required");
+            if (formFile == null) return BadRequest("file is required");
+            if (formFile.Length <= 0) return BadRequest("file is required");
+            if (string.IsNullOrEmpty(fileRecordId.ToString())) return BadRequest("fileRecordId is required");
+            if (string.IsNullOrEmpty(fileName)) return BadRequest("filename is required");
+
+            var file = new FhFile
+            {
+                FileName = fileName,
+                FileRecordId = fileRecordId
+            };
 
             // ACTIONS
-            var fileDto = await _filesService.UploadFile(file);
+            var fileDto = await _filesService.CreateFile(formFile, file);
             return Ok(fileDto);
         }
     }

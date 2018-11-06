@@ -15,19 +15,19 @@ namespace FileHubBackendV2.Services
             _filesRepository = filesRepository;
         }
 
-        public FileRecord GetFileById(Guid id)
+        public FhFile GetFile(Guid id)
         {
-            return _filesRepository.GetFileById(id);
+            return _filesRepository.GetFile(id);
         }
 
-        public IEnumerable<FileRecord> GetAllFiles()
+        public IEnumerable<FhFile> GetFiles()
         {
-            return _filesRepository.GetAllFiles();
+            return _filesRepository.GetFiles();
         }
 
-        public async Task<FileRecord> UploadFile(IFormFile file)
+        public async Task<FhFile> CreateFile(IFormFile formFile, FhFile file)
         {
-            return await _filesRepository.UploadFile(file);
+            return await _filesRepository.CreateFile(formFile, file);
         }
 
         public FileDownloadDto GetFileDownloadStreamById(Guid id)

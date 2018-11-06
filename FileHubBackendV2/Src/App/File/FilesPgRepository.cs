@@ -14,8 +14,8 @@ namespace FileHubBackendV2.Repositories
 {
     /// <summary>
     /// Ef: stands for entity framework. We can switch back to using EF and MSqlServer by injecting this class and using migrations
-    /// Pg: stands for postgress
-    /// The reason we are not using EF is because .net core 2.1 doesn't support postgress asof 10/4/2018
+    /// Pg: stands for postgres
+    /// The reason we are not using EF is because .net core 2.1 doesn't support postgres asof 10/4/2018
     /// Instead we are using OrmLite.PostgresSQL.Core 5.4
     /// </summary>
     public class FilesPgRepository : IFilesRepository
@@ -33,40 +33,45 @@ namespace FileHubBackendV2.Repositories
             baseUrl = _configuration.GetValue<string>("ApplicationBaseUrl");
         }
 
-        public FileRecord GetFileById(Guid id)
+        public FhFile GetFile(Guid id)
         {
-            FileRecord fileRecord;
+            FhFile file;
             using (var db = _dbConnectionFactory.Open())
             {
-                var query = db.Select<FileRecord>(f => f.Id == id); //SELECT by typed expression  
-                fileRecord = query.FirstOrDefault();
+                var query = db.Select<FhFile>(f => f.Id == id); //SELECT by typed expression  
+                file = query.FirstOrDefault();
             }
 
-            return fileRecord;
+            if (file == null)
+            {
+                throw new Exception($"FhFile with id doesn't exist: {id}");
+            }
+
+            return file;
         }
 
         public FileDownloadDto GetFileDownloadStreamById(Guid id)
         {
             // retrieve the file just to get the file name
-            FileRecord fileRecord;
+            FhFile file;
             using (var db = _dbConnectionFactory.Open())
             {
-                var query = db.Select<FileRecord>(f => f.Id == id); //SELECT by typed expression  
-                fileRecord = query.FirstOrDefault();
+                var query = db.Select<FhFile>(f => f.Id == id); //SELECT by typed expression  
+                file = query.FirstOrDefault();
             }
 
             // PRE-CONDITION
             // As a rule of thumb exception checks are done in the controller. 
-            // doing this here because we have to use the fileRecord.Name to buid the object
-            if (string.IsNullOrEmpty(fileRecord?.Name))
+            // doing this here because we have to use the file.FileName to buid the object
+            if (string.IsNullOrEmpty(file?.FileName))
                 throw new Exception("filerecord doesn't exist when it should");
 
             // build file to download, include stream and filename
             FileDownloadDto fileDownloadDto = new FileDownloadDto
             {
-                FileName = fileRecord.Name,
-                DownloadContentStream = getFileDataStream(id),
-                FileFullPath = getFileFullPathById(id)
+                FileName = file.FileName,
+                DownloadContentStream = GetFileDataStream(id),
+                FileFullPath = GetFileFullPathById(id)
             };
 
             return fileDownloadDto;
@@ -78,9 +83,9 @@ namespace FileHubBackendV2.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private MemoryStream getFileDataStream(Guid id)
+        private MemoryStream GetFileDataStream(Guid id)
         {
-            var fullFilePath = getFileFullPathById(id);
+            var fullFilePath = GetFileFullPathById(id);
             
             //converting file into bytes array  
             var dataBytes = File.ReadAllBytes(fullFilePath);
@@ -90,7 +95,7 @@ namespace FileHubBackendV2.Repositories
             return dataStream;
         }
 
-        private string getFileFullPathById(Guid id)
+        private string GetFileFullPathById(Guid id)
         {
             // prevent null reference in linux: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
             // in linux webrootpath will be null
@@ -107,65 +112,67 @@ namespace FileHubBackendV2.Repositories
             return filePath;
         }
 
-        public IEnumerable<FileRecord> GetAllFiles()
+        public IEnumerable<FhFile> GetFiles()
         {
             // retrieve the file just to get the file name
-            IEnumerable<FileRecord> fileRecords;
+            IEnumerable<FhFile> files;
             using (var db = _dbConnectionFactory.Open())
             {
-                var query = db.Select<FileRecord>(); //SELECT by typed expression  
-                fileRecords = query.ToList();
+                var query = db.Select<FhFile>(); //SELECT by typed expression  
+                files = query.ToList();
             }
 
             // PRE-CONDITION
-            if (fileRecords == null) throw new Exception("files couldn't be retrieved from the db");
+            if (files == null) throw new Exception("files couldn't be retrieved from the db");
 
-            // add urls to the file for download
-            foreach (var fileRecord in fileRecords)
-            {
-                var fullPathToFile = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
-                fileRecord.Url = fullPathToFile;
-            }
-
-            return fileRecords;
+            return files;
         }
         
-        public async Task<FileRecord> UploadFile(IFormFile file)
+        public async Task<FhFile> CreateFile(IFormFile formFile, FhFile file)
         {
             // ARRANGE
-            var fileRecord = new FileRecord()
-            {
-                CreatedUtc = DateTime.UtcNow,
-                UpdatedUtc = DateTime.UtcNow,
-                DeletedUtc = DateTime.MaxValue,
-                Description = "filerecordpgrepo.uploadfile(): This is file description",
-                Name = file.FileName,
-                // Id is autogenerated and assigned to POCO by postgres on insert/save: https://github.com/ServiceStack/ServiceStack.OrmLite#auto-populated-guid-ids
-            };
 
+            // PRE-CONDITION 
+            // file id should be null becuase it's autogenerated
+
+            // Id is autogenerated and assigned to POCO by postgres on insert/save: https://github.com/ServiceStack/ServiceStack.OrmLite#auto-populated-guid-ids
+
+            // ACT
+            // 1. Save a reference to DB
+            SaveFileDataInDb(file);
+
+            // 2. Upload file to system
+            await SaveFileInFileSystem(formFile, file);
+
+            // update data to return with url
+            return file;
+        }
+
+        private async Task SaveFileInFileSystem(IFormFile formFile, FhFile file)
+        {
+            var filePath = GetFileFullPathById(file.Id);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await formFile.CopyToAsync(fileStream);
+            }
+        }
+
+        private void SaveFileDataInDb(FhFile file)
+        {
+            // ARRANGE
             // ACT
             // 1. Save a reference to DB
             using (var db = _dbConnectionFactory.Open())
             {
-                db.Insert(fileRecord);
+                db.Insert(file);
             }
 
-            // PRE-CONDITION
+            // POST-CONDITION
             // The insert above should have given the POCO an guid automatically
             // Check that the GUID is unique, and it's not the default Guid. Default guid for new Guid() is "00000000-0000-0000-0000-000000000000"
-            if (fileRecord.Id == new Guid())
+            if (file.Id == new Guid())
                 throw new Exception("filerecord guid cannot be 00000000-0000-0000-0000-000000000000. Most likely file didn't get inserted in the DB");
 
-            // 2. Upload file to system
-            var filePath = getFileFullPathById(fileRecord.Id);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(fileStream);
-            }
-
-            // update data to return with url
-            fileRecord.Url = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
-            return fileRecord;
         }
 
     }

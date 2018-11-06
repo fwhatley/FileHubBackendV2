@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FileHubBackendV2.Repositories
+namespace FileHubBackendV2.Services
 {
-    public interface IFilesRepository
+    public interface IFilesService
     {
-        FileRecord GetFileById(Guid id);
-        IEnumerable<FileRecord> GetAllFiles();
-        Task<FileRecord> UploadFile(IFormFile file);
+        FhFile GetFile(Guid id);
+        IEnumerable<FhFile> GetFiles();
+        Task<FhFile> CreateFile(IFormFile formFile, FhFile file);
         FileDownloadDto GetFileDownloadStreamById(Guid id);
     }
 }

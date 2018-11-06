@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using File = System.IO.File;
 
 namespace FileHubBackendV2.Repositories
 {
@@ -17,12 +18,12 @@ namespace FileHubBackendV2.Repositories
     // Instead we are using OrmLite.PostgresSQL.Core 5.4
     /// </summary>
 
-    public class FilesEfRepository : IFilesRepository
+    public class FileRecordsEfRepository : IFileRecordsRepository
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IConfiguration _configuration;
 
-        public FilesEfRepository(IHostingEnvironment environment, IConfiguration configuration)
+        public FileRecordsEfRepository(IHostingEnvironment environment, IConfiguration configuration)
         {
             _hostingEnvironment = environment;
             _configuration = configuration;
@@ -63,8 +64,8 @@ namespace FileHubBackendV2.Repositories
             FileDownloadDto fileDownloadDto = new FileDownloadDto
             {
                 FileName = fileDto.Name,
-                DownloadContentStream = getFileDataStream(id),
-                FileFullPath = getFileFullPathById(id)
+                DownloadContentStream = GetFileDataStream(id),
+                FileFullPath = GetFileFullPathById(id)
             };
 
             return fileDownloadDto;
@@ -76,9 +77,9 @@ namespace FileHubBackendV2.Repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private MemoryStream getFileDataStream(Guid id)
+        private MemoryStream GetFileDataStream(Guid id)
         {
-            var fullFilePath = getFileFullPathById(id);
+            var fullFilePath = GetFileFullPathById(id);
             
             //converting file into bytes array  
             var dataBytes = File.ReadAllBytes(fullFilePath);
@@ -88,7 +89,7 @@ namespace FileHubBackendV2.Repositories
             return dataStream;
         }
 
-        private string getFileFullPathById(Guid id)
+        private string GetFileFullPathById(Guid id)
         {
             var folderName = _configuration.GetValue<string>("Data:UploadsFolderName");
             var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, folderName);
@@ -127,7 +128,7 @@ namespace FileHubBackendV2.Repositories
                 Name = file.FileName
             };
 
-            var filePath = getFileFullPathById(fileDto.Id);
+            var filePath = GetFileFullPathById(fileDto.Id);
 
             // ACT
             // 1. Upload file to system
@@ -147,5 +148,24 @@ namespace FileHubBackendV2.Repositories
             return fileDto;
         }
 
+        public FileRecord CreateFile(FileRecord fileRecord)
+        {
+            throw new Exception("not implemented");
+        }
+
+        public FileRecord GetFileRecordById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<FileRecord> GetFileRecords()
+        {
+            throw new NotImplementedException();
+        }
+
+        public FileRecord CreateFileRecord(FileRecord fileRecord)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

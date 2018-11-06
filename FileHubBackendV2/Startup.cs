@@ -50,7 +50,7 @@ namespace FileHubBackendV2
                     c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
                     c.ExampleFilters();
 
-                    c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an UploadFile button to endpoints which have [AddSwaggerFileUploadButton]
+                    c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an CreateFile button to endpoints which have [AddSwaggerFileUploadButton]
                     c.OperationFilter<AddHeaderOperationFilter>("correlationId", "Correlation Id for the request"); // adds any string you like to the request headers - in this case, a correlation id
                     c.OperationFilter<AddResponseHeadersFilter>(); // [SwaggerResponseHeader]
                     c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>(); // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
@@ -61,10 +61,10 @@ namespace FileHubBackendV2
 
                 services.AddMvc();
                 services.AddSingleton(Configuration); // Whenever we use IConfigration there we are going to get instance of Configuration: https://www.c-sharpcorner.com/article/setting-and-reading-values-from-app-settings-json-in-net-core/
-                services.AddScoped<IFilesService, FilesService>();
-                //services.AddSingleton<IFilesRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
-                //services.AddSingleton<IFilesRepository, FilesEfRepository>(); // Enable this if you want to use EF
-                services.AddSingleton<IFilesRepository, FilesPgRepository>(); // Enable this if you want to use OrmLite
+                services.AddScoped<IFileRecordsService, FileRecordsService>();
+                //services.AddSingleton<IFileRecordsRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
+                //services.AddSingleton<IFileRecordsRepository, FilesEfRepository>(); // Enable this if you want to use EF
+                services.AddSingleton<IFileRecordsRepository, FileRecordsPgRepository>(); // Enable this if you want to use OrmLite
 
                 // set up db OrmLite with Postgres
                 // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite

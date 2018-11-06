@@ -97,27 +97,14 @@ namespace FileHubBackendV2.Repositories
             return FilesList;
         }
 
-        public FileRecord UploadFile(IFormFile file)
+        public Task<FileRecord> UploadFile(IFormFile file)
         {
-
-            var fileDto = new FileRecord()
-            {
-                CreatedUtc = DateTime.UtcNow,
-                DeletedUtc = DateTime.MaxValue,
-                Description = "This is file description",
-                Id = Guid.NewGuid(),
-                Name = file.FileName
-            };
-
-            FilesList.Add(fileDto);
-
-            return fileDto;
-
+            throw new Exception("not implemented");
         }
 
-        Task<FileRecord> IFilesRepository.UploadFile(IFormFile file)
+        public FileRecord CreateFile(FileRecord fileRecord)
         {
-            throw new NotImplementedException();
+            throw new Exception("not implemented");
         }
     }
 }
