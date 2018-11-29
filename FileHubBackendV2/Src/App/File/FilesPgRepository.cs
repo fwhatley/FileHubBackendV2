@@ -42,12 +42,22 @@ namespace FileHubBackendV2.Repositories
                 file = query.FirstOrDefault();
             }
 
+<<<<<<< HEAD:FileHubBackendV2/Src/App/File/FilesPgRepository.cs
             if (file == null)
             {
                 throw new Exception($"FhFile with id doesn't exist: {id}");
             }
 
             return file;
+=======
+            if (fileRecord == null)
+            {
+                throw new Exception($"File with id doesn't exist: {id}");
+            }
+            fileRecord.Url = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
+
+            return fileRecord;
+>>>>>>> master:FileHubBackendV2/Src/App/Files/FilesPgRepository.cs
         }
 
         public FileDownloadDto GetFileDownloadStreamById(Guid id)
