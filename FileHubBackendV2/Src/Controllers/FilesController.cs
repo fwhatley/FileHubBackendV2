@@ -6,19 +6,29 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FileHubBackendV2.Controllers
 {
+
+    /// <summary>
+    /// Controller's job
+    ///     - validate data
+    ///         - return right away if data is invalid. eg., return badRequest if filename is required and not provided
+    ///     - initilize required data. eg., initilize DeleteUtc to date.maxValue
+    /// </summary>
     [Route("api/files")]
 
     public class FilesController : Controller
     {
         private readonly IFilesService _filesService;
+        private IFileRecordsService _fileRecordsService;
 
-        public FilesController(IFilesService filesService)
+        public FilesController(IFilesService filesService, IFileRecordsService fileRecordsService)
         {
             _filesService = filesService;
+            _fileRecordsService = fileRecordsService;
         }
 
         [HttpGet] // adding non-needed anotation, but swashbuckle 3 needs it: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
@@ -68,22 +78,39 @@ namespace FileHubBackendV2.Controllers
         [AddSwaggerFileUploadButton]
         [HttpPost()]
         // aka upload file
-        public async Task<IActionResult> CreateFile(IFormFile formFile, Guid fileRecordId, string fileName)
+        public async Task<IActionResult> CreateFile(IFormFile file, Guid fileRecordId, string fileName)
         {
             // PRE-CONDITION
-            if (formFile == null) return BadRequest("file is required");
-            if (formFile.Length <= 0) return BadRequest("file is required");
+            if (file == null) return BadRequest("file is required");
+            if (file.Length <= 0) return BadRequest("file is required");
             if (string.IsNullOrEmpty(fileRecordId.ToString())) return BadRequest("fileRecordId is required");
             if (string.IsNullOrEmpty(fileName)) return BadRequest("filename is required");
-
-            var file = new FhFile
+            
+            // verify provided fileRecordId is not associated with a file
+            if (fileRecordId != Guid.Empty)
             {
-                FileName = fileName,
-                FileRecordId = fileRecordId
+                var files = _filesService.GetFiles().ToList();
+                var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
+                if (foundFileRecordId != null)
+                {
+                    return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId is already associated with a file.");
+                }
+            }
+
+
+            var fhFile = new FhFile
+            {
+                Name = fileName,
+                FileRecordId = fileRecordId,
+                CreatedUtc = DateTime.Now, // add required data
+                UpdatedUtc = DateTime.Now,
+                DeletedUtc = DateTime.MaxValue
             };
 
+            // initialize required data
+
             // ACTIONS
-            var fileDto = await _filesService.CreateFile(formFile, file);
+            var fileDto = await _filesService.CreateFile(file, fhFile);
             return Ok(fileDto);
         }
     }

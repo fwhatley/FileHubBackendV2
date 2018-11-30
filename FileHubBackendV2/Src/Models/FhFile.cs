@@ -17,7 +17,10 @@ namespace FileHubBackendV2.Src.Models
         [Required]
         public Guid FileRecordId { get; set; }
         [Required]
-        public string FileName { get; set; }
+        public string Name { get; set; }
+        public DateTime CreatedUtc { get; set; }
+        public DateTime UpdatedUtc { get; set; }
+        public DateTime DeletedUtc { get; set; }
     }
 
 }

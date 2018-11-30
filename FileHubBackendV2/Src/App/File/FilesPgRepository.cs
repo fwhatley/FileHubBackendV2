@@ -62,14 +62,14 @@ namespace FileHubBackendV2.Repositories
 
             // PRE-CONDITION
             // As a rule of thumb exception checks are done in the controller. 
-            // doing this here because we have to use the file.FileName to buid the object
-            if (string.IsNullOrEmpty(file?.FileName))
+            // doing this here because we have to use the file.Name to buid the object
+            if (string.IsNullOrEmpty(file?.Name))
                 throw new Exception("filerecord doesn't exist when it should");
 
             // build file to download, include stream and filename
             FileDownloadDto fileDownloadDto = new FileDownloadDto
             {
-                FileName = file.FileName,
+                FileName = file.Name,
                 DownloadContentStream = GetFileDataStream(id),
                 FileFullPath = GetFileFullPathById(id)
             };
