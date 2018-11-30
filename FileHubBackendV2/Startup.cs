@@ -47,7 +47,7 @@ namespace FileHubBackendV2
                 // Register the Swagger generator, defining 1 or more Swagger documents
                 services.AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                    c.SwaggerDoc("v1", new Info { Title = "FileHub API", Version = "v1" });
                     c.ExampleFilters();
 
                     c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an CreateFile button to endpoints which have [AddSwaggerFileUploadButton]
@@ -61,10 +61,6 @@ namespace FileHubBackendV2
 
                 services.AddMvc();
                 services.AddSingleton(Configuration); // Whenever we use IConfigration there we are going to get instance of Configuration: https://www.c-sharpcorner.com/article/setting-and-reading-values-from-app-settings-json-in-net-core/
-                services.AddScoped<IFileRecordsService, FileRecordsService>();
-                //services.AddSingleton<IFileRecordsRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
-                //services.AddSingleton<IFileRecordsRepository, FilesEfRepository>(); // Enable this if you want to use EF
-                services.AddSingleton<IFileRecordsRepository, FileRecordsPgRepository>(); // Enable this if you want to use OrmLite
 
                 // set up db OrmLite with Postgres
                 // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite
@@ -75,6 +71,16 @@ namespace FileHubBackendV2
                 });
 
                 services.AddSingleton<IDbConnectionFactory>(dbFactory);
+
+                // --------------- App Services ------------------- //
+                services.AddScoped<IFilesService, FilesService>();
+                services.AddScoped<IFileRecordsService, FileRecordsService>();
+
+                // --------------- App repositories ------------------- //
+                //services.AddSingleton<IFileRecordsRepository, FakeFilesRepository>(); // TODO: use for testing, not needed if inmemory db is used
+                //services.AddSingleton<IFileRecordsRepository, FilesEfRepository>(); // Enable this if you want to use EF
+                services.AddSingleton<IFilesRepository, FilesPgRepository>(); // Enable this if you want to use OrmLite
+                services.AddSingleton<IFileRecordsRepository, FileRecordsPgRepository>(); // Enable this if you want to use OrmLite
 
             }
             catch (Exception e)
@@ -102,7 +108,7 @@ namespace FileHubBackendV2
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FileHub API V1");
                 c.RoutePrefix = string.Empty;
             });
 
