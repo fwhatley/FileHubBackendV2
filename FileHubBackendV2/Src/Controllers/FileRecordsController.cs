@@ -6,6 +6,13 @@ using System;
 
 namespace FileHubBackendV2.Controllers
 {
+
+    /// <summary>
+    /// Controller's job
+    ///     - validate data
+    ///         - return right away if data is invalid. eg., return badRequest if filename is required and not provided
+    ///     - initilize required data. eg., initilize DeleteUtc to date.maxValue
+    /// </summary>
     [Route("api/fileRecords")]
 
     public class FileRecordsController : Controller
@@ -32,7 +39,7 @@ namespace FileHubBackendV2.Controllers
             if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
 
             // ACTIONS
-            FileRecord fileRecord = _fileRecordsService.GetFileRecordById(id);
+            FileRecord fileRecord = _fileRecordsService.GetFileRecord(id);
 
             if (fileRecord == null) return NotFound();
 
@@ -42,11 +49,18 @@ namespace FileHubBackendV2.Controllers
 
         [EnableCors("AllowAll")]
         [HttpPost()]
-        public IActionResult CreateFileRecord(FileRecord fileRecord)
+        public IActionResult CreateFileRecord([FromBody] FileRecord fileRecord)
         {
             // PRE-CONDITION
             if (fileRecord == null) return BadRequest("fileRecord is required");
             if (string.IsNullOrEmpty(fileRecord.Name)) return BadRequest("file record name is required");
+
+            // initialize required data
+            fileRecord.Id = new Guid();
+            fileRecord.CreatedUtc = DateTime.Now;
+            fileRecord.UpdatedUtc = DateTime.Now;
+            fileRecord.DeletedUtc = DateTime.MaxValue;
+
 
             // ACTIONS
             var fileRecordCreated = _fileRecordsService.CreateFileRecord(fileRecord);

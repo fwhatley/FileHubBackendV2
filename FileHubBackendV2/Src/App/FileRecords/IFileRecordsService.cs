@@ -6,7 +6,7 @@ namespace FileHubBackendV2.Services
 {
     public interface IFileRecordsService
     {
-        FileRecord GetFileRecordById(Guid id);
+        FileRecord GetFileRecord(Guid id);
         IEnumerable<FileRecord> GetFileRecords();
         FileRecord CreateFileRecord(FileRecord fileRecord);
     }

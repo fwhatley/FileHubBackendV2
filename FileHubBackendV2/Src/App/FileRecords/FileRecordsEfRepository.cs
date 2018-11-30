@@ -29,7 +29,7 @@ namespace FileHubBackendV2.Repositories
             _configuration = configuration;
         }
 
-        public FileRecord GetFileById(Guid id)
+        public FileRecord GetFileRecord(Guid id)
         {
             
             FileRecord file = new FileRecord();
@@ -45,30 +45,6 @@ namespace FileHubBackendV2.Repositories
             }
 
             return file;
-        }
-
-        public FileDownloadDto GetFileDownloadStreamById(Guid id)
-        {
-            FileRecord fileDto = new FileRecord();
-            using (var db = new FileHubContext())
-            {
-                Console.Write("Getting by id");
-                var query = from f in db.Files
-                    orderby f.Name
-                    where f.Id == id
-                    select f;
-
-                fileDto = query.FirstOrDefault();
-            }
-
-            FileDownloadDto fileDownloadDto = new FileDownloadDto
-            {
-                FileName = fileDto.Name,
-                DownloadContentStream = GetFileDataStream(id),
-                FileFullPath = GetFileFullPathById(id)
-            };
-
-            return fileDownloadDto;
         }
 
         /// <summary>
@@ -95,22 +71,6 @@ namespace FileHubBackendV2.Repositories
             var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, folderName);
             var filePath = Path.Combine(pathToUploadFolder, id.ToString());
             return filePath;
-        }
-
-        public IEnumerable<FileRecord> GetAllFiles()
-        {
-            IEnumerable<FileRecord> files = new List<FileRecord>();
-            using (var db = new FileHubContext())
-            {
-                Console.Write("Getting all");
-                var query = from f in db.Files
-                    orderby f.Name
-                    select f;
-
-                files = query.ToList();
-            }
-
-            return files;
         }
 
         public async Task<FileRecord> UploadFile(IFormFile file)

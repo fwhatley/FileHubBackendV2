@@ -30,7 +30,7 @@ namespace FileHubBackendV2.Repositories
             baseUrl = _configuration.GetValue<string>("ApplicationBaseUrl");
         }
 
-        public FileRecord GetFileRecordById(Guid id)
+        public FileRecord GetFileRecord(Guid id)
         {
             FileRecord fileRecord;
             using (var db = _dbConnectionFactory.Open())
@@ -44,8 +44,6 @@ namespace FileHubBackendV2.Repositories
                 throw new Exception($"FileRecord with id doesn't exist: {id}");
             }
 
-            // todo: on get filerecord, make sure to include the fileId and the url to display the image in the UI
-            fileRecord.Url = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
 
             return fileRecord;
         }
