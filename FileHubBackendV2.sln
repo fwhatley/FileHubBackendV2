@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHubBackendV2", "FileHubBackendV2\FileHubBackendV2.csproj", "{26BF6D5B-E3F0-464F-8351-2FD2AC8A1620}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileHubBackendV2", "FileHubBackendV2\FileHubBackendV2.csproj", "{26BF6D5B-E3F0-464F-8351-2FD2AC8A1620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileHubBackendV2.Api.Tests", "FileHubBackendV2.Api.Tests\FileHubBackendV2.Api.Tests.csproj", "{DCAB26A8-897E-4DF0-BBD7-90B308B08676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{26BF6D5B-E3F0-464F-8351-2FD2AC8A1620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26BF6D5B-E3F0-464F-8351-2FD2AC8A1620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26BF6D5B-E3F0-464F-8351-2FD2AC8A1620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCAB26A8-897E-4DF0-BBD7-90B308B08676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCAB26A8-897E-4DF0-BBD7-90B308B08676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCAB26A8-897E-4DF0-BBD7-90B308B08676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCAB26A8-897E-4DF0-BBD7-90B308B08676}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
