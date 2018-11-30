@@ -2,6 +2,13 @@
 
 namespace FileHubBackendV2.Src.Controllers
 {
+
+    /// <summary>
+    /// Controller's job
+    ///     - validate data
+    ///         - return right away if data is invalid. eg., return badRequest if filename is required and not provided
+    ///     - initilize required data. eg., initilize DeleteUtc to date.maxValue
+    /// </summary>
     [Route("api/health")]
     public class HealthController : Controller
     {
