@@ -37,7 +37,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE "FhFile" (
 	"Id" uuid DEFAULT uuid_generate_v4 (), -- if id is not provided pg will automatically generate a guid for id. This is an extension needed for postgress 10
 	"Name" varchar (300) NOT NULL,
-	"FileRecordId" uuid UNIQUE NOT NULL,
+	"FileRecordId" uuid,
 	"CreatedUtc" timestamptz NOT NULL,
 	"UpdatedUtc" timestamptz NOT NULL,
 	"DeletedUtc" timestamptz NOT NULL,
