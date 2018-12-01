@@ -83,8 +83,7 @@ namespace FileHubBackendV2.Controllers
             // PRE-CONDITION
             if (file == null) return BadRequest("file is required");
             if (file.Length <= 0) return BadRequest("file is required");
-            if (string.IsNullOrEmpty(fileRecordId.ToString())) return BadRequest("fileRecordId is required");
-            if (string.IsNullOrEmpty(fileName)) return BadRequest("filename is required");
+            if (string.IsNullOrEmpty(fileName)) return BadRequest("fileName is required");
             
             // verify provided fileRecordId is not associated with a file
             if (fileRecordId != Guid.Empty)
