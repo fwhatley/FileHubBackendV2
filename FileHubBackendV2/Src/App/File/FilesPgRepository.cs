@@ -44,7 +44,7 @@ namespace FileHubBackendV2.Repositories
 
             if (file == null)
             {
-                throw new Exception($"FhFile with id doesn't exist: {id}");
+                Console.WriteLine($"WARNING - FhFile with id doesn't exist: {id}");
             }
 
             return file;
