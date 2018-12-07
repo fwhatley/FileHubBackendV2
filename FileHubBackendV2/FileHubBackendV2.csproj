@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DbScripts\**" />
+    <Content Remove="DbScripts\**" />
+    <EmbeddedResource Remove="DbScripts\**" />
+    <None Remove="DbScripts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20181006171824_AddSeedDataForFiles.cs" />
   </ItemGroup>
 
@@ -12,10 +19,6 @@
     <None Remove="Src\App\FileRecords\FakeFilesRepository.cs.forLater" />
     <None Remove="Src\App\FileRecords\FileHubContext.cs.forLatter" />
     <None Remove="Src\App\FileRecords\FilesEfRepository.cs.forLatter" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DbScripts\" />
   </ItemGroup>
 
   <ItemGroup>

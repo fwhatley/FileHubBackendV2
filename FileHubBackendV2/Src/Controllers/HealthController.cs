@@ -16,8 +16,13 @@ namespace FileHubBackendV2.Src.Controllers
         [HttpGet]
         public IActionResult GetHealth()
         {
+            var msg = new
+            {
+                msg = "System is alive and kicking."
+            };
+
             // Use IAction result for returning objects in xml or json. JSONresult is only for json
-            return Ok("System is alive and kicking.");
+            return Ok(msg);
         }
     }
 }

@@ -23,12 +23,10 @@ namespace FileHubBackendV2.Controllers
     public class FilesController : Controller
     {
         private readonly IFilesService _filesService;
-        private IFileRecordsService _fileRecordsService;
 
-        public FilesController(IFilesService filesService, IFileRecordsService fileRecordsService)
+        public FilesController(IFilesService filesService)
         {
             _filesService = filesService;
-            _fileRecordsService = fileRecordsService;
         }
 
         [HttpGet] // adding non-needed anotation, but swashbuckle 3 needs it: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
@@ -47,6 +45,12 @@ namespace FileHubBackendV2.Controllers
             // https://www.c-sharpcorner.com/article/sending-files-from-web-api/
             // PRE-CONDITION
             if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
+
+            // verify file id exists
+            var files = _filesService.GetFiles();
+            var file = files.FirstOrDefault(f => f.Id == id);
+            if (file == null)
+                return NotFound($"file with id is not found: {id}");
 
             // ACTIONS
             FileDownloadDto fileDownloadDto = _filesService.GetFileDownloadStreamById(id);
@@ -69,7 +73,7 @@ namespace FileHubBackendV2.Controllers
             // ACTIONS
             FhFile fhFileToReturn = _filesService.GetFile(id);
 
-            if (fhFileToReturn == null) return NotFound();
+            if (fhFileToReturn == null) return NotFound($"file with id is not found: {id}");
 
             return Ok(fhFileToReturn);
         }
@@ -84,19 +88,15 @@ namespace FileHubBackendV2.Controllers
             if (file == null) return BadRequest("file is required");
             if (file.Length <= 0) return BadRequest("file is required");
             if (string.IsNullOrEmpty(fileName)) return BadRequest("fileName is required");
-            
-            // verify provided fileRecordId is not associated with a file
-            if (fileRecordId != Guid.Empty)
-            {
-                var files = _filesService.GetFiles().ToList();
-                var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
-                if (foundFileRecordId != null)
-                {
-                    return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId is already associated with a file.");
-                }
-            }
 
+            // verify provided fileRecordId exists
+            var files = _filesService.GetFiles().ToList();
+            var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
+            if (foundFileRecordId == null)
+                return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId provided is not found");
 
+            // ACTIONS
+            // initialize required data
             var fhFile = new FhFile
             {
                 Name = fileName,
@@ -106,9 +106,6 @@ namespace FileHubBackendV2.Controllers
                 DeletedUtc = DateTime.MaxValue
             };
 
-            // initialize required data
-
-            // ACTIONS
             var fileDto = await _filesService.CreateFile(file, fhFile);
             return Ok(fileDto);
         }

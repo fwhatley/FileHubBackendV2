@@ -44,7 +44,7 @@ namespace MyApp.Tests
                 // Clean up
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Response content:");
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
@@ -84,7 +84,74 @@ namespace MyApp.Tests
                 // Clean up
 
             }
-            catch (Exception e)
+            catch (Exception)
+            {
+                Console.WriteLine("Response content:");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                throw;
+            }
+        }
+
+
+        [Test]
+        public async Task GetFileDownload_ShouldReturnOk()
+        {
+            // ARRANGE - set up test dependent data and state
+            var url = $"{_baseUrl}/api/files/downloadFile/";
+            var httpClient = new HttpClient();
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                // creating a file
+                var fhFileToPost = new FhFile
+                {
+                    Name = "mySampleFile.jpg",
+                };
+                var createdFileResponse = await Create_File(fhFileToPost);
+                createdFileResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+                var createdFile = await createdFileResponse.Content.ReadAsAsync<FhFile>();
+
+
+                // ACT - perform test action
+                response = await httpClient.GetAsync(url + createdFile.Id);
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+                // ASSERT - verify test results
+                var responseFilename = response.Content.Headers.ContentDisposition.FileName;
+                responseFilename.Should().Be(fhFileToPost.Name, "because that's the filename I posted");
+
+                // Clean up
+
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Response content:");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                throw;
+            }
+        }
+
+        [Test]
+        public async Task GetFileDownload_ShouldReturnNotFound()
+        {
+            // ARRANGE - set up test dependent data and state
+            var url = $"{_baseUrl}/api/files/downloadFile/";
+            var httpClient = new HttpClient();
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                // ACT - perform test action
+                response = await httpClient.GetAsync(url + new Guid());
+
+                // ASSERT - verify test results
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound, "because I just made up the guid");
+
+                // Clean up
+
+            }
+            catch (Exception)
             {
                 Console.WriteLine("Response content:");
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
@@ -111,7 +178,7 @@ namespace MyApp.Tests
                 // Clean up
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Response content:");
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
@@ -141,13 +208,12 @@ namespace MyApp.Tests
 
                 // clean up
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Response content:");
                 Console.WriteLine(await response.Content.ReadAsStringAsync());
                 throw;
             }
-
 
         }
 
@@ -156,7 +222,7 @@ namespace MyApp.Tests
         {
             // ARRANGE - set up test dependent data and state
             var url = $"{_baseUrl}/api/files";
-            var imageInBytes = File.ReadAllBytes("./InputTestFiles/fileName1.jpg"); // ./ instead of ../ because tests are run from root folder in debug or release mode
+            var imageInBytes = File.ReadAllBytes($"./InputTestFiles/{fhFile.Name}"); // ./ instead of ../ because tests are run from root folder in debug or release mode
 
             // set up content to upload
             HttpContent fileName = new StringContent(fhFile.Name);
@@ -165,10 +231,13 @@ namespace MyApp.Tests
 
 
             var client = new HttpClient();
-            var content = new MultipartFormDataContent("Upload----" + System.DateTime.Now.ToString(CultureInfo.InvariantCulture));
-            content.Add(fileName, "fileName"); // fileName & fileRecord are the formData fields. fileName is required
-            content.Add(fileRecord, "fileRecord");
-            content.Add(file, "file", "dummyfileName.jpg");
+            var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture))
+            {
+                {fileName, "fileName"},
+                {fileRecord, "fileRecord"},
+                {file, "file", "dummyfileNameWillBeOverritten.jpg"}
+            };
+            // fileName & fileRecord are the formData fields. fileName is required
 
             // ACT - perform test action
             var response = await client.PostAsync(url, content);

@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="InputTestFiles\fileName1.jpg" />
+    <None Remove="InputTestFiles\mySampleFile.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="InputTestFiles\fileName1.jpg">
+    <Content Include="InputTestFiles\mySampleFile.jpg">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

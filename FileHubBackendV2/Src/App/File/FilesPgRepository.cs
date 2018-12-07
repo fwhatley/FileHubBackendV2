@@ -43,9 +43,7 @@ namespace FileHubBackendV2.Repositories
             }
 
             if (file == null)
-            {
                 Console.WriteLine($"WARNING - FhFile with id doesn't exist: {id}");
-            }
 
             return file;
         }
@@ -64,7 +62,7 @@ namespace FileHubBackendV2.Repositories
             // As a rule of thumb exception checks are done in the controller. 
             // doing this here because we have to use the file.Name to buid the object
             if (string.IsNullOrEmpty(file?.Name))
-                throw new Exception("filerecord doesn't exist when it should");
+                throw new Exception($"WARNING - FhFile with id doesn't exist: {id}");
 
             // build file to download, include stream and filename
             FileDownloadDto fileDownloadDto = new FileDownloadDto
