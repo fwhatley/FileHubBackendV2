@@ -1,4 +1,5 @@
-﻿using FileHubBackendV2.Repositories;
+﻿using FileHubBackendV2.App.FileRecords;
+using FileHubBackendV2.Repositories;
 using FileHubBackendV2.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,8 @@ using ServiceStack.OrmLite.PostgreSQL;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace FileHubBackendV2
 {
@@ -47,9 +50,22 @@ namespace FileHubBackendV2
                 // Register the Swagger generator, defining 1 or more Swagger documents
                 services.AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new Info { Title = "FileHub API", Version = "v1" });
-                    c.ExampleFilters();
+                    c.SwaggerDoc("v1", new Info
+                    {
+                        Version = "v1",
+                        Title = "Selenium Reporter API",
+                        Description = ".net core 2.1 API to upload Selenium images and data around them"
+                    });
 
+
+                    // https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.2&tabs=visual-studio
+                    // Set the comments path for the Swagger JSON and UI.
+                    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    c.IncludeXmlComments(xmlPath);
+
+                    // add extra functionality to swagger
+                    c.ExampleFilters();
                     c.OperationFilter<AddFileParamTypesOperationFilter>(); // Adds an CreateFile button to endpoints which have [AddSwaggerFileUploadButton]
                     c.OperationFilter<AddHeaderOperationFilter>("correlationId", "Correlation Id for the request"); // adds any string you like to the request headers - in this case, a correlation id
                     c.OperationFilter<AddResponseHeadersFilter>(); // [SwaggerResponseHeader]
@@ -57,7 +73,7 @@ namespace FileHubBackendV2
                     // or use the generic method, e.g. c.OperationFilter<AppendAuthorizeToSummaryOperationFilter<MyCustomAttribute>>();
 
                 });
-                services.AddSwaggerExamples();
+                services.AddSwaggerExamples(); // adds fileUpload functionality
 
                 services.AddMvc();
                 services.AddSingleton(Configuration); // Whenever we use IConfigration there we are going to get instance of Configuration: https://www.c-sharpcorner.com/article/setting-and-reading-values-from-app-settings-json-in-net-core/
@@ -108,7 +124,7 @@ namespace FileHubBackendV2
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "FileHub API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Selenium Reporter V1");
                 c.RoutePrefix = string.Empty;
             });
 
