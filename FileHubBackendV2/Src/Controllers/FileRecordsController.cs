@@ -3,6 +3,7 @@ using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 namespace FileHubBackendV2.Controllers
 {
@@ -37,6 +38,11 @@ namespace FileHubBackendV2.Controllers
         {
             // PRE-CONDITION
             if (string.IsNullOrEmpty(id.ToString())) return BadRequest("file id is required");
+
+            // verify file id exists
+            var fileRecords = _fileRecordsService.GetFileRecords();
+            var foundFileRecord = fileRecords.FirstOrDefault(fr => fr.Id == id);
+            if (foundFileRecord == null) return NotFound("provided fileRecord id is not found");
 
             // ACTIONS
             FileRecord fileRecord = _fileRecordsService.GetFileRecord(id);

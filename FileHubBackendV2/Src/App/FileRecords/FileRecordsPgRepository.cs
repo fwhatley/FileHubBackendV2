@@ -1,4 +1,5 @@
-﻿using FileHubBackendV2.Src.Models;
+﻿using FileHubBackendV2.Repositories;
+using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using ServiceStack.Data;
@@ -7,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileHubBackendV2.Repositories
+namespace FileHubBackendV2.App.FileRecords
 {
     /// <summary>
     /// Ef: stands for entity framework. We can switch back to using EF and MSqlServer by injecting this class and using migrations
@@ -41,7 +42,7 @@ namespace FileHubBackendV2.Repositories
 
             if (fileRecord == null)
             {
-                throw new Exception($"FileRecord with id doesn't exist: {id}");
+                Console.WriteLine($"WARNING - FileRecord with id doesn't exist: {id}");
             }
 
 
@@ -59,15 +60,7 @@ namespace FileHubBackendV2.Repositories
             }
 
             // PRE-CONDITION
-            if (fileRecords == null) throw new Exception("files couldn't be retrieved from the db");
-
-            // add urls to the file for download
-            foreach (var fileRecord in fileRecords)
-            {
-                // todo: on get filerecord, make sure to include the fileId and the url to display the image in the UI
-                var fullPathToFile = $"{baseUrl}/api/files/downloadFile/{fileRecord.Id}";
-                fileRecord.Url = fullPathToFile;
-            }
+            if (!fileRecords.Any()) Console.WriteLine($"INFO - zero files returned from db");
 
             return fileRecords;
         }
@@ -85,8 +78,8 @@ namespace FileHubBackendV2.Repositories
             // POST-CONDITION
             // The insert above should have given the POCO an guid automatically
             // Check that the GUID is unique, and it's not the default Guid. Default guid for new Guid() is "00000000-0000-0000-0000-000000000000"
-            if (fileRecord.Id == new Guid())
-                throw new Exception("filerecord guid cannot be 00000000-0000-0000-0000-000000000000. Most likely file didn't get inserted in the DB");
+            if (fileRecord.Id == Guid.Empty)
+                Console.WriteLine($"WARNING - filerecord guid cannot be {new Guid().ToString()}. Most likely file didn't get inserted in the DB");
 
             return fileRecord;
         }

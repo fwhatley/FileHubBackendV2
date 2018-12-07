@@ -78,6 +78,14 @@ namespace FileHubBackendV2.Controllers
             return Ok(fhFileToReturn);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file">Any image to upload</param>
+        /// <param name="fileRecordId">Must be an existing fileRecordId</param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         [EnableCors("AllowAll")]
         [AddSwaggerFileUploadButton]
         [HttpPost()]
@@ -89,11 +97,14 @@ namespace FileHubBackendV2.Controllers
             if (file.Length <= 0) return BadRequest("file is required");
             if (string.IsNullOrEmpty(fileName)) return BadRequest("fileName is required");
 
-            // verify provided fileRecordId exists
-            var files = _filesService.GetFiles().ToList();
-            var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
-            if (foundFileRecordId == null)
-                return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId provided is not found");
+            if (fileRecordId != Guid.Empty)
+            {
+                // verify provided fileRecordId exists 
+                var files = _filesService.GetFiles().ToList();
+                var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
+                if (foundFileRecordId == null)
+                    return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId provided is not found");
+            }
 
             // ACTIONS
             // initialize required data

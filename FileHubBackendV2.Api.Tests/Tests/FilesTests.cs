@@ -31,7 +31,7 @@ namespace MyApp.Tests
                 {
                     Name = "mySampleFile.jpg",
                 };
-                await Create_File(fhFileToPost);
+                await CreateFile(fhFileToPost);
 
                 // ACT - perform test action
                 response = await httpClient.GetAsync(url);
@@ -68,7 +68,7 @@ namespace MyApp.Tests
                 {
                     Name = "mySampleFile.jpg",
                 };
-                var createdFileResponse = await Create_File(fhFileToPost);
+                var createdFileResponse = await CreateFile(fhFileToPost);
                 createdFileResponse.StatusCode.Should().Be(HttpStatusCode.OK);
                 var createdFile = await createdFileResponse.Content.ReadAsAsync<FhFile>();
 
@@ -108,7 +108,7 @@ namespace MyApp.Tests
                 {
                     Name = "mySampleFile.jpg",
                 };
-                var createdFileResponse = await Create_File(fhFileToPost);
+                var createdFileResponse = await CreateFile(fhFileToPost);
                 createdFileResponse.StatusCode.Should().Be(HttpStatusCode.OK);
                 var createdFile = await createdFileResponse.Content.ReadAsAsync<FhFile>();
 
@@ -143,7 +143,7 @@ namespace MyApp.Tests
             try
             {
                 // ACT - perform test action
-                response = await httpClient.GetAsync(url + new Guid());
+                response = await httpClient.GetAsync(url + Guid.NewGuid());
 
                 // ASSERT - verify test results
                 response.StatusCode.Should().Be(HttpStatusCode.NotFound, "because I just made up the guid");
@@ -192,7 +192,7 @@ namespace MyApp.Tests
             // ARRANGE - set up test dependent data and state
             var fhFileToPost = new FhFile
             {
-                Name = "mySampleFile.jpg",
+                Name = "mySampleFile.jpg"
             };
 
             var response = new HttpResponseMessage();
@@ -200,7 +200,7 @@ namespace MyApp.Tests
             try
             {
                 // ACT - perform test action
-                response = await Create_File(fhFileToPost);
+                response = await CreateFile(fhFileToPost);
 
                 // ASSERT - verify test results 
                 var fhFileReturned = await response.Content.ReadAsAsync<FhFile>();
@@ -217,8 +217,39 @@ namespace MyApp.Tests
 
         }
 
+        [Test]
+        public async Task PostFile_NotFoundFileRecordId_ShouldReturnBadRequest()
+        {
+            // ARRANGE - set up test dependent data and state
+            var fhFileToPost = new FhFile
+            {
+                Name = "mySampleFile.jpg",
+                FileRecordId = Guid.NewGuid()
+            };
+
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                // ACT - perform test action
+                response = await CreateFile(fhFileToPost);
+
+                // ASSERT - verify test results 
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest, "because fileRecordId passed doesn't exist");
+
+                // clean up
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Response content:");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                throw;
+            }
+
+        }
+
         #region Helpers
-        private async Task<HttpResponseMessage> Create_File(FhFile fhFile)
+        private async Task<HttpResponseMessage> CreateFile(FhFile fhFile)
         {
             // ARRANGE - set up test dependent data and state
             var url = $"{_baseUrl}/api/files";
@@ -226,7 +257,7 @@ namespace MyApp.Tests
 
             // set up content to upload
             HttpContent fileName = new StringContent(fhFile.Name);
-            HttpContent fileRecord = new StringContent(fhFile.FileRecordId.ToString());
+            HttpContent fileRecordId = new StringContent(fhFile.FileRecordId.ToString());
             HttpContent file = new StreamContent(new MemoryStream(imageInBytes));
 
 
@@ -234,7 +265,7 @@ namespace MyApp.Tests
             var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture))
             {
                 {fileName, "fileName"},
-                {fileRecord, "fileRecord"},
+                {fileRecordId, "fileRecordId"},
                 {file, "file", "dummyfileNameWillBeOverritten.jpg"}
             };
             // fileName & fileRecord are the formData fields. fileName is required

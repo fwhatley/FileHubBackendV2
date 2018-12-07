@@ -1,4 +1,5 @@
-﻿using FileHubBackendV2.Src.Models;
+﻿using FileHubBackendV2.Repositories;
+using FileHubBackendV2.Src.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -7,17 +8,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using File = System.IO.File;
 
-namespace FileHubBackendV2.Repositories
+namespace FileHubBackendV2.App.FileRecords
 {
     /// <summary>
-    // Ef: stands for entity framework. We can switch back to using EF and MSqlServer by injecting this class and using migrations
-    // Pg: stands for postgress
-    // The reason we are not using EF is because .net core 2.1 doesn't support postgress asof 10/4/2018
-    // Instead we are using OrmLite.PostgresSQL.Core 5.4
+    /// Ef: stands for entity framework. We can switch back to using EF and MSqlServer by injecting this class and using migrations
+    /// Pg: stands for postgress
+    /// The reason we are not using EF is because .net core 2.1 doesn't support postgress asof 10/4/2018
+    /// Instead we are using OrmLite.PostgresSQL.Core 5.4
     /// </summary>
-
     public class FileRecordsEfRepository : IFileRecordsRepository
     {
         private readonly IHostingEnvironment _hostingEnvironment;
