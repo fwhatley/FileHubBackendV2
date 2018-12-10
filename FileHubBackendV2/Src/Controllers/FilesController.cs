@@ -86,7 +86,6 @@ namespace FileHubBackendV2.Controllers
         /// </summary>
         /// <param name="file">Any image to upload</param>
         /// <param name="fileRecordId">Must be an existing fileRecordId</param>
-        /// <param name="fileName"></param>
         /// <returns></returns>
         [EnableCors("AllowAll")]
         [AddSwaggerFileUploadButton]
