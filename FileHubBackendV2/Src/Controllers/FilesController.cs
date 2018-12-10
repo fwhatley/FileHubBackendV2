@@ -23,10 +23,12 @@ namespace FileHubBackendV2.Controllers
     public class FilesController : Controller
     {
         private readonly IFilesService _filesService;
+        private readonly IFileRecordsService _fileRecordsService;
 
-        public FilesController(IFilesService filesService)
+        public FilesController(IFilesService filesService, IFileRecordsService fileRecordsService)
         {
             _filesService = filesService;
+            _fileRecordsService = fileRecordsService;
         }
 
         [HttpGet] // adding non-needed anotation, but swashbuckle 3 needs it: https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-2.1&tabs=visual-studio%2Cvisual-studio-xml, 
@@ -90,18 +92,17 @@ namespace FileHubBackendV2.Controllers
         [AddSwaggerFileUploadButton]
         [HttpPost()]
         // aka upload file
-        public async Task<IActionResult> CreateFile(IFormFile file, Guid fileRecordId, string fileName)
+        public async Task<IActionResult> CreateFile(IFormFile file, Guid fileRecordId)
         {
             // PRE-CONDITION
             if (file == null) return BadRequest("file is required");
             if (file.Length <= 0) return BadRequest("file is required");
-            if (string.IsNullOrEmpty(fileName)) return BadRequest("fileName is required");
 
             if (fileRecordId != Guid.Empty)
             {
                 // verify provided fileRecordId exists 
-                var files = _filesService.GetFiles().ToList();
-                var foundFileRecordId = files.FirstOrDefault(f => f.FileRecordId == fileRecordId);
+                var fileRecords = _fileRecordsService.GetFileRecords().ToList();
+                var foundFileRecordId = fileRecords.FirstOrDefault(fr => fr.Id == fileRecordId);
                 if (foundFileRecordId == null)
                     return BadRequest($"Invalid fileRecordId: {fileRecordId}. FileRecordId provided is not found");
             }
@@ -110,7 +111,7 @@ namespace FileHubBackendV2.Controllers
             // initialize required data
             var fhFile = new FhFile
             {
-                Name = fileName,
+                Name = file.FileName,
                 FileRecordId = fileRecordId,
                 CreatedUtc = DateTime.Now, // add required data
                 UpdatedUtc = DateTime.Now,
