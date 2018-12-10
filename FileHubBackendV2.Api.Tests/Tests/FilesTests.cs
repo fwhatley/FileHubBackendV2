@@ -187,9 +187,78 @@ namespace MyApp.Tests
         }
 
         [Test]
-        public async Task PostFile_ShouldReturnOk()
+        public async Task PostFile_WithoutFileRecordId_ShouldReturnOk()
         {
             // ARRANGE - set up test dependent data and state
+            var fhFileToPost = new FhFile
+            {
+                Name = "mySampleFile.jpg"
+            };
+
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                // ACT - perform test action
+                response = await CreateFile(fhFileToPost);
+
+                // ASSERT - verify test results 
+                var fhFileReturned = await response.Content.ReadAsAsync<FhFile>();
+                fhFileReturned.Name.Should().Be(fhFileToPost.Name);
+
+                // clean up
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Response content:");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                throw;
+            }
+
+        }
+
+        [Test]
+        public async Task PostFile_WithExistingFileRecordId_ShouldReturnOk()
+        {
+            // ARRANGE - set up test dependent data and state
+            // create a fileRecord to get it's id
+            // todo:
+
+
+            var fhFileToPost = new FhFile
+            {
+                Name = "mySampleFile.jpg"
+            };
+
+            var response = new HttpResponseMessage();
+
+            try
+            {
+                // ACT - perform test action
+                response = await CreateFile(fhFileToPost);
+
+                // ASSERT - verify test results 
+                var fhFileReturned = await response.Content.ReadAsAsync<FhFile>();
+                fhFileReturned.Name.Should().Be(fhFileToPost.Name);
+
+                // clean up
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Response content:");
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                throw;
+            }
+
+        }
+
+        public async Task PostFile_WithNonExistentFileRecordId_ShouldReturnBadRequest()
+        {
+            // ARRANGE - set up test dependent data and state
+            // create a fileRecord to get it's id
+            // todo: 
+
+
             var fhFileToPost = new FhFile
             {
                 Name = "mySampleFile.jpg"
