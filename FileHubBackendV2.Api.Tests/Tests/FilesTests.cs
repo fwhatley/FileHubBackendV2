@@ -335,7 +335,7 @@ namespace MyApp.Tests
             {
                 {fileName, "fileName"},
                 {fileRecordId, "fileRecordId"},
-                {file, "file", "dummyfileNameWillBeOverritten.jpg"}
+                {file, "file", fhFile.Name}
             };
             // fileName & fileRecord are the formData fields. fileName is required
 
