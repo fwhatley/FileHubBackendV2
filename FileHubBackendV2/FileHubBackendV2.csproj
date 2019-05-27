@@ -34,4 +34,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\test-results\" />
+  </ItemGroup>
 </Project>
