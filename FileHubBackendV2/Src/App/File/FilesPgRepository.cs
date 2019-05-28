@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using FileHubBackendV2.Utils;
 using ServiceStack.Data;
 using ServiceStack.OrmLite;
 using System;
@@ -95,6 +96,16 @@ namespace FileHubBackendV2.Repositories
 
         private string GetFileFullPathById(Guid id)
         {
+            var pathToWww = getPathToWwwFolder();
+            var uploadsFolder = _configuration.GetValue<string>("Data:UploadsFolderName");
+
+            var pathToUploadFolder = Path.Combine(pathToWww, uploadsFolder);
+            var filePath = Path.Combine(pathToUploadFolder, id.ToString());
+            return filePath;
+        }
+
+        private string getPathToWwwFolder()
+        {
             // prevent null reference in linux: https://stackoverflow.com/questions/35322136/ihostingenvironment-webrootpath-is-null-when-using-ef7-commands
             // in linux webrootpath will be null
             if (string.IsNullOrWhiteSpace(_hostingEnvironment.WebRootPath))
@@ -102,12 +113,7 @@ namespace FileHubBackendV2.Repositories
                 _hostingEnvironment.WebRootPath = "/var/FileHubBackendV2/wwwroot"; // TODO: hard code the path for linux for now. Needs to change bc it will break if app gets deployed to a different folder
                 Console.WriteLine($"WARNING - _hostingEnvironment.WebRootPath was null or empty. Using hardcoded value: {_hostingEnvironment.WebRootPath}");
             }
-
-            var folderName = _configuration.GetValue<string>("Data:UploadsFolderName");
-
-            var pathToUploadFolder = Path.Combine(_hostingEnvironment.WebRootPath, folderName);
-            var filePath = Path.Combine(pathToUploadFolder, id.ToString());
-            return filePath;
+            return _hostingEnvironment.WebRootPath;
         }
 
         public IEnumerable<FhFile> GetFiles()
@@ -153,6 +159,38 @@ namespace FileHubBackendV2.Repositories
             {
                 await formFile.CopyToAsync(fileStream);
             }
+
+            await SaveHtmlFileInAHtmlFolderIfHtmlFile(formFile, file);
+        }
+
+        private async Task SaveHtmlFileInAHtmlFolderIfHtmlFile(IFormFile formFile, FhFile file)
+        {
+            // check precondition
+            var contentType = FileHelpers.GetContentType(file.Name);
+            if (!contentType.Contains("text/html")) return;
+
+            // if html file, also save it in the test-results folder so they can be access via bookmarks
+            // save two copies: 1 called latest.html and the other with the normal file name
+            var pathToWww = getPathToWwwFolder();
+            var htmlFolderName = _configuration.GetValue<string>("Data:HtmlUploadsFolderName");
+            var filePath = Path.Combine(pathToWww, htmlFolderName);
+
+            var fullFilePathNormalName = Path.Combine(filePath, file.Name);
+            var fullFilePathLatest = Path.Combine(filePath, "latest.html");
+
+            // save first copy with the same name
+            using (var fileStream = new FileStream(fullFilePathNormalName, FileMode.Create))
+            {
+                await formFile.CopyToAsync(fileStream);
+            }
+
+            // save second copy with name latest.html
+            using (var fileStream = new FileStream(fullFilePathLatest, FileMode.Create))
+            {
+                await formFile.CopyToAsync(fileStream);
+            }
+
+
         }
 
         private void SaveFileDataInDb(FhFile file)

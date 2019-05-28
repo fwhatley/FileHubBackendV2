@@ -26,7 +26,9 @@ namespace FileHubBackendV2.Utils
                 {".jpg", "image/jpeg"},
                 {".jpeg", "image/jpeg"},
                 {".gif", "image/gif"},
-                {".csv", "text/csv"}
+                {".csv", "text/csv"},
+                {".htm", "text/html"},
+                {".html", "text/html"}
             };
         }
     }
