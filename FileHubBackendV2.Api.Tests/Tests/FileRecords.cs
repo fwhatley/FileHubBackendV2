@@ -11,7 +11,7 @@ namespace MyApp.Tests
     [TestFixture]
     public class FileRecordsTests
     {
-        private readonly string _baseUrl = "http://localhost:5000";
+        private readonly string _baseUrl = "http://localhost:80";
 
         [Test]
         public async Task GetFileRecord_ShouldReturnOk()

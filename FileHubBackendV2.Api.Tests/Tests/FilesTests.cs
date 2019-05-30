@@ -14,7 +14,7 @@ namespace MyApp.Tests
     [TestFixture]
     public class FilesTests
     {
-        private readonly string _baseUrl = "http://localhost:5000";
+        private readonly string _baseUrl = "http://localhost:80";
 
         [Test]
         public async Task GetFiles_ShouldReturnOk()

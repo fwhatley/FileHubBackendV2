@@ -10,7 +10,7 @@ namespace MyApp.Tests
     [TestFixture]
     public class HealthTests
     {
-        private readonly string _baseUrl = "http://localhost:5000";
+        private readonly string _baseUrl = "http://localhost:80";
 
         [Test]
         public async Task GetFile_ShouldReturnOk()

@@ -50,5 +50,5 @@ echo "INFO - =========== DONE DEPLOYING SVC APPLICATION ================"
 
 # no need to start bc supervisor automatically serves it
 #echo "INFO - serving app without supervisor: FileHubBackendV2"
-#sudo /usr/bin/dotnet /var/FileHubBackendV2/FileHubBackendV2.dll --server.urls:https://*:5000
+#sudo /usr/bin/dotnet /var/FileHubBackendV2/FileHubBackendV2.dll --server.urls:https://*:80
 

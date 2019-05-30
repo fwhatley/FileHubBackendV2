@@ -30,7 +30,7 @@ namespace FileHubBackendV2.Services
             {
                 if (f.FileRecordId == fileRecord.Id)
                 {
-                    fileRecord.Url = $"{_baseUrl}/api/files/downloadFile/{f.Id}"; // builds a url like this http://localhost:5000/api/files/fileId
+                    fileRecord.Url = $"{_baseUrl}/api/files/downloadFile/{f.Id}"; // builds a url like this http://localhost:80/api/files/fileId
                     break;
                 }
             }
@@ -51,7 +51,7 @@ namespace FileHubBackendV2.Services
                     // provide different base urls depending in environment
                     if (fr.Id == f.FileRecordId)
                     {
-                        fr.Url = $"{_baseUrl}/api/files/downloadFile/{f.Id}"; // builds a url like this http://localhost:5000/api/files/fileId
+                        fr.Url = $"{_baseUrl}/api/files/downloadFile/{f.Id}"; // builds a url like this http://localhost:80/api/files/fileId
                         break;
                     }
                 }

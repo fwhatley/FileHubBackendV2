@@ -16,6 +16,7 @@ namespace FileHubBackendV2
                 .Build();
 
             CreateWebHostBuilder(args)
+                .UseUrls("http://*:80")
                 .UseKestrel()
                 .UseConfiguration(config)
                 .UseContentRoot(Directory.GetCurrentDirectory())
