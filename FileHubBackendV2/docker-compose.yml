@@ -1,0 +1,13 @@
+﻿version: '3.4'
+
+services:
+  filehubbackendv2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fredywhatley/filehubbackendv2
+    ports:
+        - "5000:80"
+       
+# adapted from
+# https://app.pluralsight.com/player?course=docker-images-containers-aspdotnet-core&author=wes-mcclure&name=docker-images-containers-aspdotnet-core-m7&clip=7&mode=live
