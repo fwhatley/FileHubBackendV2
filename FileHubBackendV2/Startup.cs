@@ -82,7 +82,16 @@ namespace FileHubBackendV2
 
                 // set up db OrmLite with Postgres
                 // used reference: https://github.com/ServiceStack/ServiceStack.OrmLite
-                var connectionString = Configuration.GetValue<string>("Data:ConnectionStrings:PgSqlDatabase");
+                //var connectionString = Configuration.GetValue<string>("Data:ConnectionStrings:PgSqlDatabase");
+                //var dbFactory = new OrmLiteConnectionFactory(connectionString, new PostgreSqlDialectProvider()
+                //{
+                //    NamingStrategy = new OrmLiteNamingStrategyBase()
+                //});
+
+                var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+                Console.WriteLine("******************DB_CONNECTION_STRING START***********************");
+                Console.WriteLine(connectionString);
+                Console.WriteLine("******************DB_CONNECTION_STRING END***********************");
                 var dbFactory = new OrmLiteConnectionFactory(connectionString, new PostgreSqlDialectProvider()
                 {
                     NamingStrategy = new OrmLiteNamingStrategyBase()

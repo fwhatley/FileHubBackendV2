@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  filehubbackendv2:
-    image: ${DOCKER_REGISTRY-}filehubbackendv2
-    build:
-      context: .
-      dockerfile: FileHubBackendV2/Dockerfile
