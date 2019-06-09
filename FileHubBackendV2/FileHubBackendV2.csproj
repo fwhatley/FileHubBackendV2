@@ -18,6 +18,7 @@
     <Content Remove="wwwroot\results\latest.html" />
     <Content Remove="wwwroot\test-results\testResults.html" />
     <Content Remove="wwwroot\test-results\latest.html" />
+    <None Remove="Dockerfile.old" />
   </ItemGroup>
 
   <ItemGroup>
