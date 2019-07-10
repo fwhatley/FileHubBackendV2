@@ -19,7 +19,6 @@ namespace FileHubBackendV2.Controllers
     ///     - initilize required data. eg., initilize DeleteUtc to date.maxValue
     /// </summary>
     [Route("api/files")]
-
     public class FilesController : Controller
     {
         private readonly IFilesService _filesService;
